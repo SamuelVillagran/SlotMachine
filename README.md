@@ -32,8 +32,8 @@
 ## 📂 Estructura del Repositorio
 
 ```
-DOPOG01/
-└── Laboratorios/
+Code/
+└── BlueJ/
     └── slotMachine/
         ├── SlotMachine.java          # Clase principal — orquesta ruedas y reglas del juego
         ├── shapes/                    # Paquete base reutilizado y extendido
@@ -41,7 +41,6 @@ DOPOG01/
         │   ├── Symbol.java            # extends Circle — símbolo coloreado individual
         │   └── ...
         ├── docs/                      # Javadoc generado
-        └── README.md
 ```
 
 ---
