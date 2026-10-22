@@ -163,7 +163,7 @@ public class SlotMachine {
      * @param type type is the specific kind of symbol to add (e.g., "Ephemeral", "Shy", "Rotation").
      * @param pos  pos is the position of the wheel in the slot machine.
      */
-    public void addSymbol(String type, int pos, String color) { //Ayudado a perfeccionar con Gemini Pro Avanzado IA
+    public void addSymbol(String type, int pos, String color) { //Ayudado a hacer con Gemini 3.8 Flash
         isOk = false;
         
         // Verifica que la rueda en la posición 'pos' exista
@@ -189,8 +189,6 @@ public class SlotMachine {
             System.out.println("Error while attempting to create the symbol instance: " + e.getMessage());
         }
     }
-    
-
     
     /**To remove a wheel, pass its left or right position.
      * If a wheel with a wheel to its right is removed, all wheels on the right move one position to the left
