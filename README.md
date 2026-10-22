@@ -1,9 +1,4 @@
-# SlotMachine Project
-
 <div align="center">
-
-El link de oneDrive lo utilizamos para guardar el astah y el documento word de respaldo.
-https://pruebacorreoescuelaingeduco-my.sharepoint.com/:f:/r/personal/pablo_gualdron-l_mail_escuelaing_edu_co/Documents/proyecto1%20DOPO?d=w4c797642b0d9485189e7c813519d1ef8&csf=1&web=1&e=LxEJe3
 
 # 🎰 slotMachine
 
