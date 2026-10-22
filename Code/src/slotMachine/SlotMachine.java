@@ -480,6 +480,11 @@ public class SlotMachine {
         return wheels;
     }
     
+    public static void main(String[] args) {
+        SlotMachine game = new SlotMachine();
+        game.makeVisible();
+    }
+    
     protected  Wheel wheelsGet(int i) {
         return wheels.get(i);
     }
