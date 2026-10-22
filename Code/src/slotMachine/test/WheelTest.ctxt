@@ -1,0 +1,12 @@
+#BlueJ class context
+comment0.target=WheelTest
+comment0.text=\r\n\ The\ test\ class\ TestWheel.\r\n\r\n\ @author\ \ Steveen-Gualdron\r\n\ @version\ 0.1\r\n
+comment1.params=
+comment1.target=void\ setUp()
+comment2.params=
+comment2.target=void\ changeColorAndPositionTest()
+comment3.params=
+comment3.target=void\ addSymbols()
+comment4.params=
+comment4.target=void\ deleteSymbols()
+numComments=5

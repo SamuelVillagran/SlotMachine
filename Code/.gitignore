@@ -1,8 +1,10 @@
 # Ignorar los binarios
-*.class
+#*.class
+bin/
 
 # Ignorar los ctxt
-*.ctxt
+#*.ctxt
+doc/
 
 # Ignorar los paquetes (cuando trabajemos con eclipse)
 #*.pkg
@@ -22,3 +24,7 @@
 
 # temp astah
 *.asta.lock
+
+# Ignorar archivos bluej
+*.bluej
+package.bluej

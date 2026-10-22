@@ -6,7 +6,11 @@ package slotMachine;
  * 
  * @version 1.0
  */
+<<<<<<< HEAD
 public class Rotation extends Symbol implements Updatable {
+=======
+public class Rotation extends Symbol implements Updatable{
+>>>>>>> 3bd016024d4542030625cfdb1b4b778d4173d575
 
     private int baseX;
     private int baseY;
@@ -25,13 +29,6 @@ public class Rotation extends Symbol implements Updatable {
         this.baseX = newPosX;
         this.baseY = newPosY;
         super.changePosition(newPosX, newPosY);
-    }
-
-    /**
-     * Triggers the rotation effect.
-     */
-    public void rotation() {
-        rotating();
     }
 
     /**
