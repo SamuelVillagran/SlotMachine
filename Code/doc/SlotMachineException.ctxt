@@ -1,0 +1,6 @@
+#BlueJ class context
+comment0.target=SlotMachineException
+comment0.text=\r\n\ Write\ a\ description\ of\ class\ SlotMachineException\ here.\r\n\ \r\n\ @author\ (your\ name)\ \r\n\ @version\ (a\ version\ number\ or\ a\ date)\r\n
+comment1.params=message
+comment1.target=SlotMachineException(java.lang.String)
+numComments=2

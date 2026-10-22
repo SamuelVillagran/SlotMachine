@@ -1,0 +1,20 @@
+#BlueJ class context
+comment0.target=Triangle
+comment0.text=\r\n\ A\ triangle\ that\ can\ be\ manipulated\ and\ that\ draws\ itself\ on\ a\ canvas.\r\n\ \r\n\ @author\ \ Michael\ Kolling\ and\ David\ J.\ Barnes\r\n\ @version\ 1.0\ \ (15\ July\ 2000)\r\n
+comment1.params=
+comment1.target=Triangle()
+comment1.text=\r\n\ Create\ a\ new\ triangle\ at\ default\ position\ with\ default\ color.\r\n
+comment2.params=color\ height\ width
+comment2.target=Triangle(java.lang.String,\ int,\ int)
+comment2.text=\r\n\ Create\ a\ new\ triangle\ given\ a\ color,\ width\ and\ height.\r\n
+comment3.params=
+comment3.target=void\ makeInvisible()
+comment4.params=angle
+comment4.target=void\ rotate(double)
+comment4.text=\r\n\ This\ able\ to\ rotate\ the\ triangle\ a\ determinated\ angle.\r\n\ @param\ angle\ angle\ is\ a\ double\ that\ defines\ the\ rotation\ angle\r\n\ of\ triangle\ by\ grades\ \u00B0.\r\n
+comment5.params=
+comment5.target=void\ decrement()
+comment6.params=
+comment6.target=void\ draw()
+comment6.text=\r\n\ Draw\ the\ triangle\ with\ current\ specifications\ on\ screen.\r\n
+numComments=7

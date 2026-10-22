@@ -1,0 +1,24 @@
+# Ignorar los binarios
+*.class
+
+# Ignorar los ctxt
+*.ctxt
+
+# Ignorar los paquetes (cuando trabajemos con eclipse)
+#*.pkg
+
+# Ignore .zip
+*.zip
+
+# Ignore .project VS
+.project
+
+# Ignore .classpath VS
+.classpath
+
+# Ignore uml
+*.uml
+*.umlcd
+
+# temp astah
+*.asta.lock

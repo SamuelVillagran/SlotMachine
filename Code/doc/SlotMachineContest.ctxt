@@ -1,0 +1,18 @@
+#BlueJ class context
+comment0.target=SlotMachineContest
+comment0.text=\r\n\ solution\ maraton\ problem\r\n\r\n\ @version\ 2.3\r\n
+comment1.params=cant
+comment1.target=SlotMachineContest(int)
+comment2.params=n
+comment2.target=int[][]\ solve(int)
+comment2.text=\r\n\ @param\ u\ is\ the\ number\ of\ reels\ and\ symbols.\r\n\ @return\ moves\ made\ for\ k\ \=\ 1\r\n
+comment3.params=n
+comment3.target=void\ simulate(int)
+comment3.text=\r\n\ @param\ u\ is\ the\ number\ of\ reels\ and\ symbols.\r\n
+comment4.params=i\ u\ machine
+comment4.target=void\ printOI(int,\ int,\ SlotMachine)
+comment5.params=machine
+comment5.target=void\ different(SlotMachine)
+comment6.params=machine
+comment6.target=int[]\ identical(SlotMachine)
+numComments=7
