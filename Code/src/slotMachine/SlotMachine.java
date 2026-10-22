@@ -92,56 +92,105 @@ public class SlotMachine {
     }
     
     /**
-     * Add a wheel to this slot machine, place the roulette wheel on the left or right side,
-     * specify its type, and change its color.
-     * @param type type is the specific kind of wheel to add (e.g., "rebel").
-     * @param color color is the color of the wheel.
-     * @param pos pos is the position of wheel that is added to this object.
+     * Adds a specific type of wheel to the slot machine at the given position.
+     * 
+     * @param type The class name of the wheel to add (e.g., "Rebel", "Lefty").
+     * @param pos  The target position where the wheel should be inserted.
      */
-    public void addWheel(String type, int pos) { 
+    public void addWheel(String type, int pos) { //Ayudado a perfeccionar con Gemini 3.8 Flash
         isOk = false;
-        pos = adjustPosition(pos, true); 
-        NavigableMap<Integer, Wheel> tailWheels = wheels.tailMap(pos, true);
-        List<Integer> keysToShift = new ArrayList<>(tailWheels.keySet());
-        Collections.reverse(keysToShift); 
-        for (Integer key : keysToShift) {
-            Wheel wheelToMove = wheels.remove(key);
-            wheelToMove.setPositionWheel(key + 1);
-            wheels.put(key + 1, wheelToMove);
-        }
-        
+        comprovateType(type);
+        pos = adjustPosition(pos, true);
         try {
+            // Normaliza el nombre (ej. "rebel" -> "Rebel")
+            String normalizedType = type.substring(0, 1).toUpperCase() + type.substring(1);
             String packageName = this.getClass().getPackageName();
-            Class<?> wheelClass = Class.forName(packageName + "." + type);
-            Wheel newWheelToAdd = null;        
-            // Se verifica si la clase tiene un constructor que reciba una Wheel (como Lefty)
-            if (type.equalsIgnoreCase("Lefty")) {
-                // Busca la rueda con la clave inmediatamente menor a pos
-                Map.Entry<Integer, Wheel> previousEntry = wheels.lowerEntry(pos);
-                Wheel previousWheel = (previousEntry != null) ? previousEntry.getValue() : wheels.get(pos - 1);
-            
+            Class<?> wheelClass = Class.forName(packageName + "." + normalizedType);
+            // Valida que la clase sea realmente una subclase de Wheel
+            if (!Wheel.class.isAssignableFrom(wheelClass)) {
+                errorMessage("La clase '" + normalizedType + "' no es una rueda válida.");
+                ok();
+                return;
+            }
+            Wheel newWheelToAdd = null;
+            if (normalizedType.equalsIgnoreCase("Lefty")) {
+                if (pos <= 1) {
+                    errorMessage("Una rueda Lefty no puede ser colocada en la primera posición.");
+                    ok();
+                    return;
+                }
+                Wheel previousWheel = wheels.get(pos - 1);
+                if (previousWheel == null) {
+                    errorMessage("No existe una rueda previa para inicializar la rueda Lefty.");
+                    ok();
+                    return;
+                }
                 newWheelToAdd = (Wheel) wheelClass.getDeclaredConstructor(Wheel.class)
                                                   .newInstance(previousWheel);
-            }else {
-                // Constructor por defecto para ruedas estándar (como Rebel)
-                newWheelToAdd = (Wheel) wheelClass.getDeclaredConstructor()
-                                                  .newInstance();
+            } else {
+                newWheelToAdd = (Wheel) wheelClass.getDeclaredConstructor().newInstance();
             }
-        
+            // Una vez instanciada con éxito, se desplazan las ruedas hacia la derecha
+            NavigableMap<Integer, Wheel> tailWheels = wheels.tailMap(pos, true);
+            List<Integer> keysToShift = new ArrayList<>(tailWheels.keySet());
+            Collections.reverse(keysToShift);
+            for (Integer key : keysToShift) {
+                Wheel wheelToMove = wheels.remove(key);
+                wheelToMove.setPositionWheel(key + 1);
+                wheels.put(key + 1, wheelToMove);
+            }
+            // Inserción y configuración de la nueva rueda
             newWheelToAdd.setPositionWheel(pos);
             wheels.put(pos, newWheelToAdd);
             if (Updatable.class.isAssignableFrom(wheelClass)) thingsToUpdate.add((Updatable) newWheelToAdd);// Bloque ayudado a hacer por Gemini Pro 3.1
-            adjustWheels(); 
+            adjustWheels();
             if (isVisible) {
                 newWheelToAdd.makeVisible();
             }
             isOk = true;
-            } catch (ClassNotFoundException e) {
-                System.out.println("Error: The class '" + type + "' does not exist in the project.");
-            } catch (Exception e) {
-                System.out.println("Error while attempting to create the wheel instance:" + e.getMessage());
-            }
+        } catch (ClassNotFoundException e) {
+            errorMessage("Error: La clase de rueda '" + type + "' no existe en el proyecto.");
+        } catch (NoSuchMethodException e) {
+            errorMessage("Error: Constructor adecuado no encontrado para '" + type + "'.");
+        } catch (Exception e) {
+            errorMessage("Error al instanciar la rueda: " + e.getMessage());
+        }
+        ok();
     }
+
+    /**
+     * Add a symbol to a specific wheel, specifying its type (Ephemeral, Shy, Rotation).
+     * @param type type is the specific kind of symbol to add (e.g., "Ephemeral", "Shy", "Rotation").
+     * @param pos  pos is the position of the wheel in the slot machine.
+     */
+    public void addSymbol(String type, int pos, String color) { //Ayudado a perfeccionar con Gemini Pro Avanzado IA
+        isOk = false;
+        
+        // Verifica que la rueda en la posición 'pos' exista
+        boolean isApprovedInvariant = proofInvariant(pos, false);
+        if (!isApprovedInvariant) return;
+        try {
+            String packageName = this.getClass().getPackageName();
+            // Asegura primera letra mayúscula por si pasan "ephemeral", "shy" o "rotation"
+            String formattedType = type.substring(0, 1).toUpperCase() + type.substring(1);
+            Class<?> symbolClass = Class.forName(packageName + "." + formattedType);
+            Symbol newSymbolToAdd = null;
+            newSymbolToAdd = (Symbol) symbolClass.getDeclaredConstructor(String.class)
+                                                 .newInstance(color);
+            // Obtiene la rueda y le agrega el nuevo símbolo instanciado
+            Wheel wheelToAddSymbol = wheels.get(pos);
+            wheelToAddSymbol.addSymbol(newSymbolToAdd);
+            // Si el símbolo implementa Updatable (como Ephemeral y Shy), se registra para actualización
+            if (Updatable.class.isAssignableFrom(symbolClass)) thingsToUpdate.add((Updatable) newSymbolToAdd);
+            isOk = true;
+        } catch (ClassNotFoundException e) {
+            System.out.println("Error: The class '" + type + "' does not exist in the project.");
+        } catch (Exception e) {
+            System.out.println("Error while attempting to create the symbol instance: " + e.getMessage());
+        }
+    }
+    
+
     
     /**To remove a wheel, pass its left or right position.
      * If a wheel with a wheel to its right is removed, all wheels on the right move one position to the left
@@ -166,7 +215,7 @@ public class SlotMachine {
         
         wheelToDelete.makeInvisible();
         wheels.remove(pos);
-        
+        if (Updatable.class.isAssignableFrom(wheelToDelete.getClass())) thingsToUpdate.remove(wheelToDelete);
         // Desplazar las llaves del mapa hacia la izquierda
         NavigableMap<Integer, Wheel> cutMapWheels = wheels.tailMap(pos, false);
         List<Integer> keysToShift = new ArrayList<>(cutMapWheels.keySet());
@@ -199,7 +248,9 @@ public class SlotMachine {
         isOk = false;
         for (Wheel wheel : wheels.values()) {
             wheel.delSymbol(symbol);
+            
         }
+        
         isOk = true;
     }
 
@@ -661,6 +712,14 @@ public class SlotMachine {
         if (thingsToUpdate.remove(thingToUpdate)) {
             thingToUpdate.update();
             thingsToUpdate.add(thingToUpdate);
+        }
+    }
+
+    private void comprovateType(String type) {
+        if (type == null || type.trim().isEmpty()) {
+            errorMessage("El tipo de rueda no puede estar vacío.");
+            ok();
+            return;
         }
     }
 }

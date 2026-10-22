@@ -6,7 +6,7 @@ package slotMachine;
  * 
  * @version 1.0
  */
-public class Rotation extends Symbol {
+public class Rotation extends Symbol implements Updatable{
 
     private int baseX;
     private int baseY;
@@ -29,13 +29,6 @@ public class Rotation extends Symbol {
     }
 
     /**
-     * Triggers the rotation effect.
-     */
-    public void rotation() {
-        rotating();
-    }
-
-    /**
      * Changes the position of the symbol moving it up and down.
      */
     public void rotating() {
@@ -51,8 +44,7 @@ public class Rotation extends Symbol {
     /**
      * Applies the specific effect of the rotation symbol.
      */
-    @Override
-    protected void efect() {
+    public void update() {
         rotating();
     }
 }
