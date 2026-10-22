@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Triangle.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">slotmachine</a> &gt; <a href="index.source.html" class="el_package">shapes</a> &gt; <span class="el_source">Triangle.java</span></div><h1>Triangle.java</h1><pre class="source lang-java linenums">package shapes;
+import java.awt.*;
+
+/**
+ * A triangle that can be manipulated and that draws itself on a canvas.
+ * 
+ * @author  Michael Kolling and David J. Barnes
+ * @version 1.0  (15 July 2000)
+ */
+
+public class Triangle extends Polygon2D {
+    
+    public static final int VERTICES=3;
+
+    private double rotationAngle; // La implementacion de la rotación fue hecha con Gemini IA
+    
+    /**
+     * Create a new triangle at default position with default color.
+     */
+    public Triangle() {
+<span class="fc" id="L21">        super(140, 15, &quot;green&quot;);</span>
+<span class="fc" id="L22">        height = 30;</span>
+<span class="fc" id="L23">        width = 40;</span>
+<span class="fc" id="L24">        rotationAngle = 0.0;</span>
+<span class="fc" id="L25">    }</span>
+    
+    /**
+     * Create a new triangle given a color, width and height.
+     */
+    public Triangle(String color, int height, int width) {
+<span class="nc" id="L31">        super(140, 15, color);</span>
+<span class="nc" id="L32">        this.height = height;</span>
+<span class="nc" id="L33">        this.width = width;</span>
+<span class="nc" id="L34">        rotationAngle = 0.0;</span>
+<span class="nc" id="L35">    }</span>
+    
+    public void makeInvisible(){
+<span class="fc" id="L38">        erase();</span>
+<span class="fc" id="L39">        isVisible = false;</span>
+<span class="fc" id="L40">    }</span>
+    
+    /**
+     * This able to rotate the triangle a determinated angle.
+     * @param angle angle is a double that defines the rotation angle
+     * of triangle by grades °.
+     */
+    public void rotate(double angle) { // Este método fue ayudado a hacer por Gemini IA
+<span class="nc" id="L48">        erase();</span>
+<span class="nc" id="L49">        rotationAngle = Math.toRadians(angle);</span>
+<span class="nc" id="L50">        draw();</span>
+<span class="nc" id="L51">    }</span>
+    
+    public void decrement() {
+<span class="nc" id="L54">        height /= 3;</span>
+<span class="nc" id="L55">        width /= 4;</span>
+<span class="nc" id="L56">        frameFlickering();</span>
+<span class="nc" id="L57">    }</span>
+    
+    /*
+     * Draw the triangle with current specifications on screen.
+     */
+    @Override
+    protected void draw(){// Este método fue ayudado a modificar por Gemini IA para que funcione rotate()
+<span class="fc bfc" id="L64" title="All 2 branches covered.">        if(isVisible) {</span>
+<span class="fc" id="L65">        Canvas canvas = Canvas.getCanvas();</span>
+        
+        // Coordenadas originales de los vértices (sin rotar)
+<span class="fc" id="L68">        int x1 = xPosition;</span>
+<span class="fc" id="L69">        int y1 = yPosition;</span>
+<span class="fc" id="L70">        int x2 = xPosition + (width/2);</span>
+<span class="fc" id="L71">        int y2 = yPosition + height;</span>
+<span class="fc" id="L72">        int x3 = xPosition - (width/2);</span>
+<span class="fc" id="L73">        int y3 = yPosition + height;</span>
+        
+        // Centro de rotación (ejemplo: la punta superior)
+<span class="fc" id="L76">        int cx = xPosition;</span>
+<span class="fc" id="L77">        int cy = yPosition;</span>
+        
+        // Aplica la rotación a cada vértice
+        // Nota: Las fórmulas de rotación necesitan coordenadas 'double'
+<span class="fc" id="L81">        double newX1 = cx + (x1 - cx) * Math.cos(rotationAngle) - (y1 - cy) * Math.sin(rotationAngle);</span>
+<span class="fc" id="L82">        double newY1 = cy + (x1 - cx) * Math.sin(rotationAngle) + (y1 - cy) * Math.cos(rotationAngle);</span>
+        
+        // Repite el cálculo para x2, y2, x3, y3...
+        
+<span class="fc" id="L86">        double newX2 = cx + (x2 - cx) * Math.cos(rotationAngle) - (y2 - cy) * Math.sin(rotationAngle);</span>
+<span class="fc" id="L87">        double newY2 = cy + (x2 - cx) * Math.sin(rotationAngle) + (y2 - cy) * Math.cos(rotationAngle);</span>
+        
+<span class="fc" id="L89">        double newX3 = cx + (x3 - cx) * Math.cos(rotationAngle) - (y3 - cy) * Math.sin(rotationAngle);</span>
+<span class="fc" id="L90">        double newY3 = cy + (x3 - cx) * Math.sin(rotationAngle) + (y3 - cy) * Math.cos(rotationAngle);</span>
+        
+        // Crea el nuevo polígono con las coordenadas rotadas
+<span class="fc" id="L93">        int[] xpoints = { (int) newX1, (int) newX2, (int) newX3 };</span>
+<span class="fc" id="L94">        int[] ypoints = { (int) newY1, (int) newY2, (int) newY3 };</span>
+        
+<span class="fc" id="L96">        canvas.draw(this, color, new Polygon(xpoints, ypoints, VERTICES));</span>
+<span class="fc" id="L97">        canvas.wait(10);</span>
+        }
+<span class="fc" id="L99">    }   </span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

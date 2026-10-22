@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>edu.eci</groupId>
+    <artifactId>slotmachine</artifactId>
+    <version>1.0-SNAPSHOT</version>
+
+    <properties>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+    <dependencies>
+        <!-- Dependencia de JUnit 5 para las pruebas -->
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>5.9.2</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <!-- 1. Indicar que el código de la aplicación está en src -->
+        <sourceDirectory>src</sourceDirectory>
+        <!-- 2. Indicar que el código de las pruebas está en src/slotMachine/test -->
+        <testSourceDirectory>src/slotMachine/test</testSourceDirectory>
+
+        <plugins>
+            <!-- Excluir la carpeta 'test' de la compilación de clases de producción -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.11.0</version>
+                <configuration>
+                    <excludes>
+                        <exclude>slotMachine/test/**</exclude>
+                    </excludes>
+                </configuration>
+            </plugin>
+
+            <!-- Configurar Surefire para ejecutar todos los test en src/slotMachine/test -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.1.2</version>
+                <configuration>
+                    <includes>
+                        <include>**/*.java</include>
+                    </includes>
+                </configuration>
+            </plugin>
+
+            <!-- Plugin de JaCoCo para cobertura -->
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>0.8.10</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>report</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-pmd-plugin</artifactId>
+                <version>3.21.0</version>
+                <configuration>
+                    <!-- 1 = Alta (Crítica), 2 = Media-Alta, 3 = Media, 4 = Media-Baja, 5 = Baja -->
+                    <!-- Al poner 2, ignorará todo lo que sea prioridad 3, 4 y 5 -->
+                    <minimumPriority>2</minimumPriority>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>

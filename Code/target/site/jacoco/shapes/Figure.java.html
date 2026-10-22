@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Figure.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">slotmachine</a> &gt; <a href="index.source.html" class="el_package">shapes</a> &gt; <span class="el_source">Figure.java</span></div><h1>Figure.java</h1><pre class="source lang-java linenums">package shapes;
+/**
+ * Class Figure, each figure of shapes is Figure
+ * 
+ * @author Gualdron - Villagran
+ * @version 1.0
+ */
+public abstract class Figure {
+    
+    protected String color;
+    protected boolean isVisible;
+    protected int xPosition;
+    protected int yPosition;
+    
+<span class="fc" id="L15">    protected Figure(int x, int y, String color) {</span>
+<span class="fc" id="L16">        this.xPosition = x;</span>
+<span class="fc" id="L17">        this.yPosition = y;</span>
+<span class="fc" id="L18">        this.color = color;</span>
+<span class="fc" id="L19">        isVisible = false;</span>
+<span class="fc" id="L20">    }</span>
+    
+    /**
+     * Make this shape visible. If it was already visible, do nothing.
+     */
+    public void makeVisible() {
+<span class="fc" id="L26">        isVisible = true;</span>
+<span class="fc" id="L27">        draw();</span>
+<span class="fc" id="L28">    }</span>
+    
+    /**
+     * Make this shape invisible. If it was already invisible, do nothing.
+     */
+    public void makeInvisible() {
+<span class="fc" id="L34">        erase();</span>
+<span class="fc" id="L35">        isVisible = false;</span>
+<span class="fc" id="L36">    }</span>
+    
+    /**
+     * Move the shape a few pixels to the right.
+     */
+    public void moveRigth(int distance) {
+<span class="nc" id="L42">        erase();</span>
+<span class="nc" id="L43">        xPosition += distance;</span>
+<span class="nc" id="L44">        draw();</span>
+<span class="nc" id="L45">    }</span>
+    
+    /**
+     * Move the shape a few pixels to the left.
+     */
+    public void moveLeft() {
+<span class="nc" id="L51">        moveHorizontal(-20);</span>
+<span class="nc" id="L52">    }</span>
+    
+    /**
+     * Move the shape a few pixels up.
+     */
+    public void moveUp() {
+<span class="nc" id="L58">        moveVertical(-20);</span>
+<span class="nc" id="L59">    }</span>
+    
+    /**
+     * Move the shape a few pixels down.
+     */
+    public void moveDown() {
+<span class="nc" id="L65">        moveVertical(20);</span>
+<span class="nc" id="L66">    }</span>
+    
+    /**
+     * Move the shape vertically.
+     * @param distance the desired distance in pixels
+     */
+    public void moveVertical(int distance) {
+<span class="nc" id="L73">        erase();</span>
+<span class="nc" id="L74">        yPosition += distance;</span>
+<span class="nc" id="L75">        draw();</span>
+<span class="nc" id="L76">    }</span>
+    
+    /**
+     * Move the shape horizontally.
+     * @param distance the desired distance in pixels
+     */
+    public void moveHorizontal(int distance) {
+<span class="nc" id="L83">        erase();</span>
+<span class="nc" id="L84">        xPosition += distance;</span>
+<span class="nc" id="L85">        draw();</span>
+<span class="nc" id="L86">    }</span>
+    
+    /**
+     * Slowly move the shape horizontally.
+     * @param distance the desired distance in pixels
+     */
+    public void slowMoveHorizontal(int distance) {
+        int delta;
+
+<span class="nc bnc" id="L95" title="All 2 branches missed.">        if(distance &lt; 0) {</span>
+<span class="nc" id="L96">            delta = -1;</span>
+<span class="nc" id="L97">            distance = -distance;</span>
+        } else {
+<span class="nc" id="L99">            delta = 1;</span>
+        }
+
+<span class="nc bnc" id="L102" title="All 2 branches missed.">        for(int i = 0; i &lt; distance; i++){</span>
+<span class="nc" id="L103">            xPosition += delta;</span>
+<span class="nc" id="L104">            draw();</span>
+        }
+<span class="nc" id="L106">    }</span>
+    
+    /**
+     * Slowly move the shape vertically.
+     * @param distance the desired distance in pixels
+     */
+    public void slowMoveVertical(int distance) {
+        int delta;
+
+<span class="pc bpc" id="L115" title="1 of 2 branches missed.">        if(distance &lt; 0) {</span>
+<span class="nc" id="L116">            delta = -1;</span>
+<span class="nc" id="L117">            distance = -distance;</span>
+        } else {
+<span class="fc" id="L119">            delta = 1;</span>
+        }
+
+<span class="fc bfc" id="L122" title="All 2 branches covered.">        for(int i = 0; i &lt; distance; i++){</span>
+<span class="fc" id="L123">            yPosition += delta;</span>
+<span class="fc" id="L124">            draw();</span>
+        }
+<span class="fc" id="L126">    }</span>
+    
+    /**
+     * Change the shape's color. 
+     * @param color the new color. Valid colors are &quot;red&quot;, &quot;yellow&quot;, &quot;blue&quot;, &quot;green&quot;,
+     * &quot;black&quot;, &quot;white&quot;, &quot;magenta&quot;, &quot;orange&quot;, &quot;pink&quot;, &quot;cyan&quot;, &quot;gray&quot;, &quot;lightGray&quot;,
+     * &quot;darkGray&quot;, &quot;brown&quot; and &quot;maroon&quot;.
+     */
+    public void changeColor(String newColor) {
+<span class="fc" id="L135">        color = newColor;</span>
+<span class="fc" id="L136">        draw();</span>
+<span class="fc" id="L137">    }</span>
+    
+    /**
+     * Get position x of shape
+     * @return Position x of shape
+     */    
+    public int getXPosition(){
+<span class="fc" id="L144">        return xPosition;</span>
+    }
+    
+    
+    /**
+     * Get position y of shape
+     * @return Position y of shape
+     */    
+    public int getYPosition(){
+<span class="fc" id="L153">        return yPosition;</span>
+    }
+    
+    /**
+     * Set new x and y position
+     * @param x x is the new xPosition of figure.
+     * @param y y is the new yPosition of figure.
+     */
+    public void setPosition(int x, int y) {
+<span class="fc" id="L162">        this.xPosition = x;</span>
+<span class="fc" id="L163">        this.yPosition = y;</span>
+<span class="fc" id="L164">    }</span>
+    
+    /**
+     * Erasing shape on canvas
+     * 
+     */  
+    public void erase() {
+<span class="fc bfc" id="L171" title="All 2 branches covered.">        if(isVisible) {</span>
+<span class="fc" id="L172">            Canvas canvas = Canvas.getCanvas();</span>
+<span class="fc" id="L173">            canvas.erase(this);</span>
+        }
+<span class="fc" id="L175">    }</span>
+    
+    /**
+     * Get the figure color
+     */
+    public String getColor() {
+<span class="nc" id="L181">        return color;</span>
+    }
+    
+    /**
+     * Give the attribute visible
+     */
+    public boolean isVisible() {
+<span class="fc" id="L188">        return isVisible;</span>
+    }
+    
+    public void frameFlickering() {
+<span class="fc" id="L192">        makeInvisible();</span>
+<span class="fc" id="L193">        makeVisible();</span>
+<span class="fc" id="L194">    }</span>
+    
+    public void setVisible(boolean isVisible) {
+<span class="nc" id="L197">        this.isVisible = isVisible;</span>
+<span class="nc" id="L198">    }</span>
+    
+    public void setColor(String color) {
+<span class="nc" id="L201">        this.color = color;</span>
+<span class="nc" id="L202">    }</span>
+    
+    /**
+     * Draw the shape on canvas
+     */
+    protected abstract void draw();
+    
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

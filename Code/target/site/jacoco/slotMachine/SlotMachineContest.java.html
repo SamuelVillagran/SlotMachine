@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SlotMachineContest.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">slotmachine</a> &gt; <a href="index.source.html" class="el_package">slotMachine</a> &gt; <span class="el_source">SlotMachineContest.java</span></div><h1>SlotMachineContest.java</h1><pre class="source lang-java linenums">package slotMachine;
+import java.util.ArrayList;
+
+/**
+ * solution maraton problem
+ *
+ * @version 2.3
+ */
+public class SlotMachineContest {
+    private  static int n;
+    private  static int k;
+    private  static ArrayList&lt;int[]&gt; steps;
+    private static SlotMachine machine;
+    
+<span class="fc" id="L15">    public SlotMachineContest(int cant) {</span>
+<span class="fc" id="L16">        machine = new SlotMachine(n);</span>
+<span class="fc" id="L17">    }</span>
+    
+    /**
+     * @param u is the number of reels and symbols.
+     * @return moves made for k = 1
+     */
+    public static int[][] solve(int n) {
+<span class="fc" id="L24">        SlotMachineContest.n = n;</span>
+<span class="fc" id="L25">        steps = new ArrayList();</span>
+<span class="fc" id="L26">        SlotMachine machine = new SlotMachine(n);</span>
+<span class="fc" id="L27">        machine.spin();</span>
+<span class="fc" id="L28">        machine.makeInvisible();</span>
+<span class="fc" id="L29">        k = machine.distinctSymbols();</span>
+        
+<span class="pc bpc" id="L31" title="1 of 2 branches missed.">        if (k == 1) {</span>
+<span class="nc" id="L32">            return steps.toArray(new int[steps.size()][]);</span>
+        }
+        
+<span class="fc" id="L35">        different(machine);</span>
+        
+<span class="pc bpc" id="L37" title="1 of 2 branches missed.">        if (k == 1) {</span>
+<span class="nc" id="L38">            return steps.toArray(new int[steps.size()][]);</span>
+        }
+        
+<span class="fc" id="L41">        int[] moves = identical(machine);</span>
+        
+<span class="fc bfc" id="L43" title="All 2 branches covered.">        for (int u = 2; u &lt;= n; u++) {</span>
+<span class="fc" id="L44">            int move = moves[u];</span>
+<span class="fc" id="L45">            printOI(u, -move,machine);</span>
+        }
+
+<span class="fc" id="L48">        return steps.toArray(new int[steps.size()][]);</span>
+         
+    
+    }
+    
+    /**
+     * @param u is the number of reels and symbols.
+     */
+    public static  void simulate(int n) {
+<span class="fc" id="L57">        SlotMachineContest.n = n;</span>
+<span class="fc" id="L58">        steps = new ArrayList();</span>
+<span class="fc" id="L59">        machine = new SlotMachine(n);</span>
+<span class="fc" id="L60">        machine.spin();</span>
+<span class="fc" id="L61">        machine.makeVisible();</span>
+<span class="fc" id="L62">        k = machine.distinctSymbols();</span>
+        
+<span class="pc bpc" id="L64" title="1 of 2 branches missed.">        if (k == 1) {</span>
+<span class="nc" id="L65">            return;</span>
+        }
+        
+<span class="fc" id="L68">        different(machine);</span>
+        
+<span class="pc bpc" id="L70" title="1 of 2 branches missed.">        if (k == 1) {</span>
+<span class="nc" id="L71">            return;</span>
+        }
+        
+<span class="fc" id="L74">        int[] moves = identical(machine);</span>
+        
+<span class="pc bpc" id="L76" title="1 of 2 branches missed.">        if (k == 1) {</span>
+<span class="nc" id="L77">            return;</span>
+        }
+        
+<span class="fc bfc" id="L80" title="All 2 branches covered.">        for (int u = 2; u &lt;= n; u++) {</span>
+<span class="fc" id="L81">            int move = moves[u]; </span>
+<span class="fc" id="L82">            printOI(u, -move,machine);</span>
+        }
+        
+<span class="fc" id="L85">    }</span>
+    
+    private static  void printOI(int i, int u, SlotMachine machine) {
+<span class="fc" id="L88">        steps.add(new int[]{i,u});</span>
+<span class="fc" id="L89">        Wheel targetWheel = machine.wheelsGet(i);</span>
+<span class="fc" id="L90">        targetWheel.changePositionSymbol(u);</span>
+<span class="fc" id="L91">        k = machine.distinctSymbols();</span>
+<span class="fc" id="L92">    }</span>
+    
+    private static  void different(SlotMachine machine) {
+<span class="fc" id="L95">        int oldK = k;</span>
+<span class="fc bfc" id="L96" title="All 2 branches covered.">        for (int i = 2; i &lt;= n; i++) {</span>
+<span class="fc" id="L97">            int maxKPosition = 0;</span>
+        
+<span class="fc bfc" id="L99" title="All 2 branches covered.">            for (int u = 1; u &lt;= n; u++) {</span>
+<span class="fc" id="L100">                printOI(i, 1,machine);</span>
+        
+<span class="pc bpc" id="L102" title="1 of 2 branches missed.">                if (k == 1) {</span>
+<span class="nc" id="L103">                    return;</span>
+                }
+        
+<span class="pc bpc" id="L106" title="1 of 2 branches missed.">                if (oldK &lt; k) {</span>
+<span class="nc" id="L107">                    maxKPosition = u;</span>
+<span class="nc" id="L108">                    oldK = k;</span>
+                }
+            }
+        
+<span class="pc bpc" id="L112" title="1 of 2 branches missed.">            if (maxKPosition != 0) {</span>
+<span class="nc" id="L113">                printOI(i, maxKPosition,machine);</span>
+        
+<span class="nc bnc" id="L115" title="All 2 branches missed.">                if (k == 1) {</span>
+<span class="nc" id="L116">                    return;</span>
+                }
+            }
+    
+        }
+<span class="fc" id="L121">    }</span>
+    
+    private static  int[] identical(SlotMachine machine) {
+<span class="fc" id="L124">        int[] moves = new int[n + 1];</span>
+
+<span class="fc bfc" id="L126" title="All 2 branches covered.">        for (int i = 1; i &lt; n; i++) {</span>
+<span class="fc" id="L127">            printOI(1, 1,machine);</span>
+        
+<span class="pc bpc" id="L129" title="1 of 2 branches missed.">            if (k == 1) {</span>
+<span class="nc" id="L130">                return moves;</span>
+            }
+        
+<span class="fc" id="L133">            int oldK = k;</span>
+        
+<span class="fc bfc" id="L135" title="All 2 branches covered.">            for (int u = 2; u &lt;= n; u++) {</span>
+<span class="fc" id="L136">                printOI(u, -i,machine);</span>
+        
+<span class="pc bpc" id="L138" title="1 of 2 branches missed.">                if (k == 1) {</span>
+<span class="nc" id="L139">                    return moves;</span>
+                }
+        
+<span class="pc bpc" id="L142" title="1 of 2 branches missed.">                if (oldK &lt; k) {</span>
+<span class="nc" id="L143">                    moves[u] = i;</span>
+<span class="nc" id="L144">                    printOI(u, i,machine);</span>
+        
+<span class="nc bnc" id="L146" title="All 2 branches missed.">                    if (k == 1) {</span>
+<span class="nc" id="L147">                        return moves;</span>
+                    }
+        
+                    break;
+                } else {
+<span class="fc" id="L152">                    printOI(u, i,machine);</span>
+        
+<span class="pc bpc" id="L154" title="1 of 2 branches missed.">                    if (k == 1) {</span>
+<span class="nc" id="L155">                        return moves;</span>
+                    }
+                }
+            }
+        }
+
+<span class="fc" id="L161">        printOI(1, 1,machine);</span>
+        
+<span class="fc" id="L163">        return moves;</span>
+    }
+    
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

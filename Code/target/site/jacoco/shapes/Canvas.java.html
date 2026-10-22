@@ -1,0 +1,292 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Canvas.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">slotmachine</a> &gt; <a href="index.source.html" class="el_package">shapes</a> &gt; <span class="el_source">Canvas.java</span></div><h1>Canvas.java</h1><pre class="source lang-java linenums">package shapes;
+import javax.swing.*;
+import java.awt.*;
+import java.util.List;
+import java.util.*;
+
+/**
+ * Canvas is a class to allow for simple graphical drawing on a canvas.
+ * This is a modification of the general purpose Canvas, specially made for
+ * the BlueJ &quot;shapes&quot; example. 
+ *
+ * @author: Bruce Quig
+ * @author: Michael Kolling (mik)
+ *
+ * @version: 1.6 (shapes)
+ */
+public class Canvas{
+    // Note: The implementation of this class (specifically the handling of
+    // shape identity and colors) is slightly more complex than necessary. This
+    // is done on purpose to keep the interface and instance fields of the
+    // shape objects in this project clean and simple for educational purposes.
+
+    private static Canvas canvasSingleton;
+<span class="fc" id="L24">    private static final Map&lt;String, Color&gt; PALETTE = new HashMap&lt;&gt;();</span>
+    static {
+<span class="fc" id="L26">        PALETTE.put(&quot;red&quot;,     Color.red);</span>
+<span class="fc" id="L27">        PALETTE.put(&quot;black&quot;,   Color.black);</span>
+<span class="fc" id="L28">        PALETTE.put(&quot;blue&quot;,    Color.blue);</span>
+<span class="fc" id="L29">        PALETTE.put(&quot;yellow&quot;,  Color.yellow);</span>
+<span class="fc" id="L30">        PALETTE.put(&quot;green&quot;,   Color.green);</span>
+<span class="fc" id="L31">        PALETTE.put(&quot;magenta&quot;, Color.magenta);</span>
+<span class="fc" id="L32">        PALETTE.put(&quot;white&quot;,   Color.white);</span>
+<span class="fc" id="L33">        PALETTE.put(&quot;orange&quot;,  Color.orange);</span>
+<span class="fc" id="L34">        PALETTE.put(&quot;pink&quot;,    Color.pink);</span>
+<span class="fc" id="L35">        PALETTE.put(&quot;cyan&quot;,    Color.cyan);</span>
+<span class="fc" id="L36">        PALETTE.put(&quot;gray&quot;,    Color.gray);</span>
+<span class="fc" id="L37">        PALETTE.put(&quot;lightGray&quot;,Color.lightGray);</span>
+<span class="fc" id="L38">        PALETTE.put(&quot;darkGray&quot;,Color.darkGray);</span>
+        
+<span class="fc" id="L40">        PALETTE.put(&quot;#FF0000&quot;, Color.decode(&quot;#FF0000&quot;));</span>
+<span class="fc" id="L41">        PALETTE.put(&quot;#8B0000&quot;, Color.decode(&quot;#8B0000&quot;));</span>
+<span class="fc" id="L42">        PALETTE.put(&quot;#DC143C&quot;, Color.decode(&quot;#DC143C&quot;));</span>
+<span class="fc" id="L43">        PALETTE.put(&quot;#FF6347&quot;, Color.decode(&quot;#FF6347&quot;));</span>
+<span class="fc" id="L44">        PALETTE.put(&quot;#FFC0CB&quot;, Color.decode(&quot;#FFC0CB&quot;));</span>
+<span class="fc" id="L45">        PALETTE.put(&quot;#FF1493&quot;, Color.decode(&quot;#FF1493&quot;));</span>
+<span class="fc" id="L46">        PALETTE.put(&quot;#C71585&quot;, Color.decode(&quot;#C71585&quot;));</span>
+<span class="fc" id="L47">        PALETTE.put(&quot;#FF4500&quot;, Color.decode(&quot;#FF4500&quot;));</span>
+<span class="fc" id="L48">        PALETTE.put(&quot;#FF8C00&quot;, Color.decode(&quot;#FF8C00&quot;));</span>
+<span class="fc" id="L49">        PALETTE.put(&quot;#FFA500&quot;, Color.decode(&quot;#FFA500&quot;));</span>
+<span class="fc" id="L50">        PALETTE.put(&quot;#FFD700&quot;, Color.decode(&quot;#FFD700&quot;));</span>
+<span class="fc" id="L51">        PALETTE.put(&quot;#FFFF00&quot;, Color.decode(&quot;#FFFF00&quot;));</span>
+<span class="fc" id="L52">        PALETTE.put(&quot;#F0E68C&quot;, Color.decode(&quot;#F0E68C&quot;));</span>
+<span class="fc" id="L53">        PALETTE.put(&quot;#B8860B&quot;, Color.decode(&quot;#B8860B&quot;));</span>
+<span class="fc" id="L54">        PALETTE.put(&quot;#008000&quot;, Color.decode(&quot;#008000&quot;));</span>
+<span class="fc" id="L55">        PALETTE.put(&quot;#00FF00&quot;, Color.decode(&quot;#00FF00&quot;));</span>
+<span class="fc" id="L56">        PALETTE.put(&quot;#32CD32&quot;, Color.decode(&quot;#32CD32&quot;));</span>
+<span class="fc" id="L57">        PALETTE.put(&quot;#228B22&quot;, Color.decode(&quot;#228B22&quot;));</span>
+<span class="fc" id="L58">        PALETTE.put(&quot;#8FBC8F&quot;, Color.decode(&quot;#8FBC8F&quot;));</span>
+<span class="fc" id="L59">        PALETTE.put(&quot;#00FA9A&quot;, Color.decode(&quot;#00FA9A&quot;));</span>
+<span class="fc" id="L60">        PALETTE.put(&quot;#6B8E23&quot;, Color.decode(&quot;#6B8E23&quot;));</span>
+<span class="fc" id="L61">        PALETTE.put(&quot;#0000FF&quot;, Color.decode(&quot;#0000FF&quot;));</span>
+<span class="fc" id="L62">        PALETTE.put(&quot;#000080&quot;, Color.decode(&quot;#000080&quot;));</span>
+<span class="fc" id="L63">        PALETTE.put(&quot;#1E90FF&quot;, Color.decode(&quot;#1E90FF&quot;));</span>
+<span class="fc" id="L64">        PALETTE.put(&quot;#4682B4&quot;, Color.decode(&quot;#4682B4&quot;));</span>
+<span class="fc" id="L65">        PALETTE.put(&quot;#00BFFF&quot;, Color.decode(&quot;#00BFFF&quot;));</span>
+<span class="fc" id="L66">        PALETTE.put(&quot;#00FFFF&quot;, Color.decode(&quot;#00FFFF&quot;));</span>
+<span class="fc" id="L67">        PALETTE.put(&quot;#48D1CC&quot;, Color.decode(&quot;#48D1CC&quot;));</span>
+<span class="fc" id="L68">        PALETTE.put(&quot;#5F9EA0&quot;, Color.decode(&quot;#5F9EA0&quot;));</span>
+<span class="fc" id="L69">        PALETTE.put(&quot;#800080&quot;, Color.decode(&quot;#800080&quot;));</span>
+<span class="fc" id="L70">        PALETTE.put(&quot;#4B0082&quot;, Color.decode(&quot;#4B0082&quot;));</span>
+<span class="fc" id="L71">        PALETTE.put(&quot;#8A2BE2&quot;, Color.decode(&quot;#8A2BE2&quot;));</span>
+<span class="fc" id="L72">        PALETTE.put(&quot;#DA70D6&quot;, Color.decode(&quot;#DA70D6&quot;));</span>
+<span class="fc" id="L73">        PALETTE.put(&quot;#EE82EE&quot;, Color.decode(&quot;#EE82EE&quot;));</span>
+<span class="fc" id="L74">        PALETTE.put(&quot;#FF00FF&quot;, Color.decode(&quot;#FF00FF&quot;));</span>
+<span class="fc" id="L75">        PALETTE.put(&quot;#9370DB&quot;, Color.decode(&quot;#9370DB&quot;));</span>
+<span class="fc" id="L76">        PALETTE.put(&quot;#A52A2A&quot;, Color.decode(&quot;#A52A2A&quot;));</span>
+<span class="fc" id="L77">        PALETTE.put(&quot;#8B4513&quot;, Color.decode(&quot;#8B4513&quot;));</span>
+<span class="fc" id="L78">        PALETTE.put(&quot;#D2691E&quot;, Color.decode(&quot;#D2691E&quot;));</span>
+<span class="fc" id="L79">        PALETTE.put(&quot;#F4A460&quot;, Color.decode(&quot;#F4A460&quot;));</span>
+<span class="fc" id="L80">        PALETTE.put(&quot;#DEB887&quot;, Color.decode(&quot;#DEB887&quot;));</span>
+<span class="fc" id="L81">        PALETTE.put(&quot;#FFDEAD&quot;, Color.decode(&quot;#FFDEAD&quot;));</span>
+<span class="fc" id="L82">        PALETTE.put(&quot;#000000&quot;, Color.decode(&quot;#000000&quot;));</span>
+<span class="fc" id="L83">        PALETTE.put(&quot;#2F4F4F&quot;, Color.decode(&quot;#2F4F4F&quot;));</span>
+<span class="fc" id="L84">        PALETTE.put(&quot;#696969&quot;, Color.decode(&quot;#696969&quot;));</span>
+<span class="fc" id="L85">        PALETTE.put(&quot;#808080&quot;, Color.decode(&quot;#808080&quot;));</span>
+<span class="fc" id="L86">        PALETTE.put(&quot;#A9A9A9&quot;, Color.decode(&quot;#A9A9A9&quot;));</span>
+<span class="fc" id="L87">        PALETTE.put(&quot;#C0C0C0&quot;, Color.decode(&quot;#C0C0C0&quot;));</span>
+<span class="fc" id="L88">        PALETTE.put(&quot;#DCDCDC&quot;, Color.decode(&quot;#DCDCDC&quot;));</span>
+<span class="fc" id="L89">        PALETTE.put(&quot;#F5F5DC&quot;, Color.decode(&quot;#F5F5DC&quot;));</span>
+<span class="fc" id="L90">    }</span>
+
+    /**
+     * Factory method to get the canvas singleton object.
+     */
+    public static Canvas getCanvas(){
+<span class="fc bfc" id="L96" title="All 2 branches covered.">        if(canvasSingleton == null) {</span>
+<span class="fc" id="L97">            canvasSingleton = new Canvas(&quot;BlueJ Shapes Demo&quot;, 300, 300, </span>
+                                         Color.white);
+        }
+<span class="fc" id="L100">        canvasSingleton.setVisible(true);</span>
+<span class="fc" id="L101">        return canvasSingleton;</span>
+    }
+
+    //  ----- instance part -----
+
+    private JFrame frame;
+    private CanvasPane canvas;
+    private Graphics2D graphic;
+    private Color backgroundColour;
+    private Image canvasImage;
+    private List &lt;Object&gt; objects;
+    private HashMap &lt;Object,ShapeDescription&gt; shapes;
+    
+    /**
+     * Create a Canvas.
+     * @param title  title to appear in Canvas Frame
+     * @param width  the desired width for the canvas
+     * @param height  the desired height for the canvas
+     * @param bgClour  the desired background colour of the canvas
+     */
+<span class="fc" id="L121">    public Canvas(String title, int width, int height, Color bgColour){</span>
+<span class="fc" id="L122">        frame = new JFrame();</span>
+<span class="fc" id="L123">        canvas = new CanvasPane();</span>
+<span class="fc" id="L124">        frame.setContentPane(canvas);</span>
+<span class="fc" id="L125">        frame.setTitle(title);</span>
+<span class="fc" id="L126">        canvas.setPreferredSize(new Dimension(width, height));</span>
+<span class="fc" id="L127">        backgroundColour = bgColour;</span>
+<span class="fc" id="L128">        frame.pack();</span>
+<span class="fc" id="L129">        objects = new ArrayList &lt;Object&gt;();</span>
+<span class="fc" id="L130">        shapes = new HashMap &lt;Object,ShapeDescription&gt;();</span>
+<span class="fc" id="L131">    }</span>
+    
+    
+    
+    public void setDimension(int width, int height) {
+<span class="fc" id="L136">        canvas.setPreferredSize(new Dimension(width, height));</span>
+<span class="fc" id="L137">        frame.pack();</span>
+        
+<span class="fc" id="L139">        Dimension size = canvas.getSize();</span>
+<span class="fc" id="L140">        canvasImage = canvas.createImage(size.width, size.height);</span>
+<span class="fc" id="L141">        graphic = (Graphics2D)canvasImage.getGraphics();</span>
+<span class="fc" id="L142">        graphic.setColor(backgroundColour);</span>
+<span class="fc" id="L143">        graphic.fillRect(0, 0, size.width, size.height);</span>
+<span class="fc" id="L144">        graphic.setColor(Color.black);</span>
+        
+
+<span class="fc" id="L147">    }</span>
+    
+
+    /**
+     * Set the canvas visibility and brings canvas to the front of screen
+     * when made visible. This method can also be used to bring an already
+     * visible canvas to the front of other windows.
+     * @param visible  boolean value representing the desired visibility of
+     * the canvas (true or false) 
+     */
+    public void setVisible(boolean visible){
+<span class="fc bfc" id="L158" title="All 2 branches covered.">        if(graphic == null) {</span>
+            // first time: instantiate the offscreen image and fill it with
+            // the background colour
+<span class="fc" id="L161">            Dimension size = canvas.getSize();</span>
+<span class="fc" id="L162">            canvasImage = canvas.createImage(size.width, size.height);</span>
+<span class="fc" id="L163">            graphic = (Graphics2D)canvasImage.getGraphics();</span>
+<span class="fc" id="L164">            graphic.setColor(backgroundColour);</span>
+<span class="fc" id="L165">            graphic.fillRect(0, 0, size.width, size.height);</span>
+<span class="fc" id="L166">            graphic.setColor(Color.black);</span>
+        }
+<span class="fc" id="L168">        frame.setVisible(visible);</span>
+<span class="fc" id="L169">    }</span>
+
+    /**
+     * Draw a given shape onto the canvas.
+     * @param  referenceObject  an object to define identity for this shape
+     * @param  color            the color of the shape
+     * @param  shape            the shape object to be drawn on the canvas
+     */
+     // Note: this is a slightly backwards way of maintaining the shape
+     // objects. It is carefully designed to keep the visible shape interfaces
+     // in this project clean and simple for educational purposes.
+    public void draw(Object referenceObject, String color, Shape shape){
+<span class="fc" id="L181">        objects.remove(referenceObject);   // just in case it was already there</span>
+<span class="fc" id="L182">        objects.add(referenceObject);      // add at the end</span>
+<span class="fc" id="L183">        shapes.put(referenceObject, new ShapeDescription(shape, color));</span>
+<span class="fc" id="L184">        redraw();</span>
+<span class="fc" id="L185">    }</span>
+     
+    
+    /**
+     * Erase a given shape's from the screen.
+     * @param  referenceObject  the shape object to be erased 
+     */
+    public void erase(Object referenceObject){
+<span class="fc" id="L193">        objects.remove(referenceObject);   // just in case it was already there</span>
+<span class="fc" id="L194">        shapes.remove(referenceObject);</span>
+<span class="fc" id="L195">        redraw();</span>
+<span class="fc" id="L196">    }</span>
+
+    /**
+     * Set the foreground colour of the Canvas.
+     * @param colorString  the new colour for the foreground of the Canvas 
+     */
+    public void setForegroundColor(String colorString){
+<span class="fc" id="L203">        graphic.setColor(PALETTE.getOrDefault(colorString, Color.black));</span>
+<span class="fc" id="L204">    }</span>
+
+    /**
+     * Wait for a specified number of milliseconds before finishing.
+     * This provides an easy way to specify a small delay which can be
+     * used when producing animations.
+     * @param  milliseconds  the number 
+     */
+    public void wait(int milliseconds){
+        try{
+<span class="fc" id="L214">            Thread.sleep(milliseconds);</span>
+<span class="nc" id="L215">        } catch (Exception e){</span>
+            // ignoring exception at the moment
+<span class="fc" id="L217">        }</span>
+<span class="fc" id="L218">    }</span>
+
+    /**
+     * Redraw ell shapes currently on the Canvas.
+     */
+    private void redraw(){
+<span class="fc" id="L224">        erase();</span>
+<span class="fc bfc" id="L225" title="All 2 branches covered.">        for(Iterator i=objects.iterator(); i.hasNext(); ) {</span>
+<span class="fc" id="L226">                       shapes.get(i.next()).draw(graphic);</span>
+        }
+<span class="fc" id="L228">        canvas.repaint();</span>
+<span class="fc" id="L229">    }</span>
+       
+    /**
+     * Erase the whole canvas. (Does not repaint.)
+     */
+    private void erase(){
+<span class="fc" id="L235">        Color original = graphic.getColor();</span>
+<span class="fc" id="L236">        graphic.setColor(backgroundColour);</span>
+<span class="fc" id="L237">        Dimension size = canvas.getSize();</span>
+<span class="fc" id="L238">        graphic.fill(new java.awt.Rectangle(0, 0, size.width, size.height));</span>
+<span class="fc" id="L239">        graphic.setColor(original);</span>
+<span class="fc" id="L240">    }</span>
+
+
+    /************************************************************************
+     * Inner class CanvasPane - the actual canvas component contained in the
+     * Canvas frame. This is essentially a JPanel with added capability to
+     * refresh the image drawn on it.
+     */
+<span class="fc" id="L248">    private class CanvasPane extends JPanel{</span>
+        public void paint(Graphics g){
+<span class="fc" id="L250">            g.drawImage(canvasImage, 0, 0, null); </span>
+<span class="fc" id="L251">        }</span>
+    }
+    
+    public void close() {
+<span class="fc" id="L255">        objects.clear();</span>
+<span class="fc" id="L256">        shapes.clear();</span>
+
+<span class="fc" id="L258">        erase();</span>
+
+<span class="fc" id="L260">        canvas.repaint();</span>
+<span class="fc" id="L261">        frame.dispose();</span>
+<span class="fc" id="L262">        canvasSingleton = null;</span>
+<span class="fc" id="L263">    }</span>
+    
+    /************************************************************************
+     * Inner class CanvasPane - the actual canvas component contained in the
+     * Canvas frame. This is essentially a JPanel with added capability to
+     * refresh the image drawn on it.
+     */
+    private class ShapeDescription{
+        private Shape shape;
+        private String colorString;
+
+<span class="fc" id="L274">        public ShapeDescription(Shape shape, String color){</span>
+<span class="fc" id="L275">            this.shape = shape;</span>
+<span class="fc" id="L276">            colorString = color;</span>
+<span class="fc" id="L277">        }</span>
+
+        public void draw(Graphics2D graphic){
+<span class="fc" id="L280">            setForegroundColor(colorString);</span>
+<span class="fc" id="L281">            graphic.draw(shape);</span>
+<span class="fc" id="L282">            graphic.fill(shape);</span>
+<span class="fc" id="L283">        }</span>
+    }
+    
+    public void resizeAndRefresh(int width, int height) {
+<span class="fc" id="L287">        setDimension(width, height);</span>
+<span class="fc" id="L288">        redraw();</span>
+<span class="fc" id="L289">    }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

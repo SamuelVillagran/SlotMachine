@@ -1,0 +1,667 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SlotMachine.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">slotmachine</a> &gt; <a href="index.source.html" class="el_package">slotMachine</a> &gt; <span class="el_source">SlotMachine.java</span></div><h1>SlotMachine.java</h1><pre class="source lang-java linenums">package slotMachine;
+import shapes.Rectangle;
+import shapes.Canvas;
+import shapes.Rectangle;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.*;
+import javax.swing.JOptionPane;
+import java.util.Map;
+import java.util.TreeMap;
+
+/**
+ * This is slot machine game, this is a variant of I problem - SlotMachine ICPC competition
+ *
+ * @author Steveen-Gualdron
+ * @version 0.1
+ */
+public class SlotMachine {
+    private boolean isOk;
+    private NavigableMap&lt;Integer, Wheel&gt; wheels; //Key represents the position of wheel at the slotmachine
+    private boolean isVisible;
+    private Rectangle bodySlotMachine;
+    private  static int n;
+    private  static int k;
+    private  static ArrayList&lt;int[]&gt; steps;
+    private Set&lt;Updatable&gt; thingsToUpdate;
+    
+    /**Cronstructor, nyadic method class, of SlotMachine.
+     */
+<span class="fc" id="L30">    public SlotMachine() {</span>
+<span class="fc" id="L31">        isOk = false;</span>
+<span class="fc" id="L32">        ArrayList&lt;int[]&gt; steps = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L33">        wheels = new TreeMap&lt;&gt;();</span>
+<span class="fc" id="L34">        thingsToUpdate = new HashSet&lt;&gt;();</span>
+<span class="fc" id="L35">        isVisible = false;</span>
+<span class="fc" id="L36">        bodySlotMachine = new Rectangle(10, 10, 270, 270, &quot;pink&quot;);</span>
+<span class="fc" id="L37">        isOk = true;</span>
+<span class="fc" id="L38">    }</span>
+    
+    public SlotMachine(int cant) {
+<span class="fc" id="L41">        this();</span>
+        //esta parte la hizo Gemini IA, todos los posibles 50 colores
+<span class="fc" id="L43">        String[] colorsHex = {</span>
+            &quot;#FF0000&quot;, &quot;#8B0000&quot;, &quot;#DC143C&quot;, &quot;#FF6347&quot;, &quot;#FFC0CB&quot;, &quot;#FF1493&quot;, &quot;#C71585&quot;,
+            &quot;#FF4500&quot;, &quot;#FF8C00&quot;, &quot;#FFA500&quot;, &quot;#FFD700&quot;, &quot;#FFFF00&quot;, &quot;#F0E68C&quot;, &quot;#B8860B&quot;,
+            &quot;#008000&quot;, &quot;#00FF00&quot;, &quot;#32CD32&quot;, &quot;#228B22&quot;, &quot;#8FBC8F&quot;, &quot;#00FA9A&quot;, &quot;#6B8E23&quot;,
+            &quot;#0000FF&quot;, &quot;#000080&quot;, &quot;#1E90FF&quot;, &quot;#4682B4&quot;, &quot;#00BFFF&quot;, &quot;#00FFFF&quot;, &quot;#48D1CC&quot;,
+            &quot;#5F9EA0&quot;, &quot;#800080&quot;, &quot;#4B0082&quot;, &quot;#8A2BE2&quot;, &quot;#DA70D6&quot;, &quot;#EE82EE&quot;, &quot;#FF00FF&quot;,
+            &quot;#9370DB&quot;, &quot;#A52A2A&quot;, &quot;#8B4513&quot;, &quot;#D2691E&quot;, &quot;#F4A460&quot;, &quot;#DEB887&quot;, &quot;#FFDEAD&quot;,
+            &quot;#000000&quot;, &quot;#2F4F4F&quot;, &quot;#696969&quot;, &quot;#808080&quot;, &quot;#A9A9A9&quot;, &quot;#C0C0C0&quot;, &quot;#DCDCDC&quot;,
+            &quot;#F5F5DC&quot;
+        };
+        //hasta aca
+<span class="fc" id="L54">        Canvas.getCanvas().resizeAndRefresh(60*cant, 283);</span>
+<span class="fc bfc" id="L55" title="All 2 branches covered.">        for (int i = 0; i &lt; cant; i++) {</span>
+<span class="fc" id="L56">            int requestedPos = i; </span>
+<span class="fc" id="L57">            addWheel(requestedPos);</span>
+<span class="fc" id="L58">            int correctedPos = adjustPosition(requestedPos, true);</span>
+            
+<span class="fc bfc" id="L60" title="All 2 branches covered.">            for (int u = 0; u &lt; cant; u++) {</span>
+<span class="fc" id="L61">                addSymbol(correctedPos, colorsHex[u]);</span>
+            }
+        }
+<span class="fc" id="L64">        isOk = true;</span>
+<span class="fc" id="L65">    }</span>
+    
+    /**
+     * Add a wheel to this slot machine, place the roulette wheel on the left or right side.
+     * @param pos pos is the position of wheel that is added to this object.
+     */
+    public void addWheel(int pos) { //Ayudado a perfeccionar con Gemini Pro Avanzado IA
+<span class="fc" id="L72">        isOk = false;</span>
+<span class="fc" id="L73">        pos = adjustPosition(pos, true); </span>
+        // Desplazar las llaves del mapa hacia la derecha para hacer espacio
+<span class="fc" id="L75">        NavigableMap&lt;Integer, Wheel&gt; cutMapWheels = wheels.tailMap(pos, true);</span>
+<span class="fc" id="L76">        List&lt;Integer&gt; keysToShift = new ArrayList&lt;&gt;(cutMapWheels.keySet());</span>
+<span class="fc" id="L77">        Collections.reverse(keysToShift); // Importante: recorrer de mayor a menor para no sobrescribir</span>
+<span class="fc bfc" id="L78" title="All 2 branches covered.">        for (Integer key : keysToShift) {</span>
+<span class="fc" id="L79">            Wheel wheelToMove = wheels.remove(key);</span>
+<span class="fc" id="L80">            wheelToMove.setPositionWheel(key + 1);</span>
+<span class="fc" id="L81">            wheels.put(key + 1, wheelToMove);</span>
+<span class="fc" id="L82">        }</span>
+<span class="fc" id="L83">        Wheel newWheelToAdd = new Wheel();</span>
+<span class="fc" id="L84">        newWheelToAdd.setPositionWheel(pos);</span>
+<span class="fc" id="L85">        wheels.put(pos, newWheelToAdd);</span>
+        
+<span class="fc" id="L87">        adjustWheels(); </span>
+<span class="fc bfc" id="L88" title="All 2 branches covered.">        if (isVisible) {</span>
+<span class="fc" id="L89">            newWheelToAdd.makeVisible();</span>
+        }
+<span class="fc" id="L91">        isOk = true;</span>
+<span class="fc" id="L92">    }</span>
+    
+    /**
+     * Add a wheel to this slot machine, place the roulette wheel on the left or right side,
+     * specify its type, and change its color.
+     * @param type type is the specific kind of wheel to add (e.g., &quot;rebel&quot;).
+     * @param color color is the color of the wheel.
+     * @param pos pos is the position of wheel that is added to this object.
+     */
+    public void addWheel(String type, int pos) { 
+<span class="fc" id="L102">        isOk = false;</span>
+<span class="fc" id="L103">        pos = adjustPosition(pos, true); </span>
+<span class="fc" id="L104">        NavigableMap&lt;Integer, Wheel&gt; tailWheels = wheels.tailMap(pos, true);</span>
+<span class="fc" id="L105">        List&lt;Integer&gt; keysToShift = new ArrayList&lt;&gt;(tailWheels.keySet());</span>
+<span class="fc" id="L106">        Collections.reverse(keysToShift); </span>
+<span class="pc bpc" id="L107" title="1 of 2 branches missed.">        for (Integer key : keysToShift) {</span>
+<span class="nc" id="L108">            Wheel wheelToMove = wheels.remove(key);</span>
+<span class="nc" id="L109">            wheelToMove.setPositionWheel(key + 1);</span>
+<span class="nc" id="L110">            wheels.put(key + 1, wheelToMove);</span>
+<span class="nc" id="L111">        }</span>
+        
+        try {
+<span class="fc" id="L114">            String packageName = this.getClass().getPackageName();</span>
+<span class="fc" id="L115">            Class&lt;?&gt; wheelClass = Class.forName(packageName + &quot;.&quot; + type);</span>
+<span class="fc" id="L116">            Wheel newWheelToAdd = null;        </span>
+            // Se verifica si la clase tiene un constructor que reciba una Wheel (como Lefty)
+<span class="fc bfc" id="L118" title="All 2 branches covered.">            if (type.equalsIgnoreCase(&quot;Lefty&quot;)) {</span>
+                // Busca la rueda con la clave inmediatamente menor a pos
+<span class="fc" id="L120">                Map.Entry&lt;Integer, Wheel&gt; previousEntry = wheels.lowerEntry(pos);</span>
+<span class="pc bpc" id="L121" title="1 of 2 branches missed.">                Wheel previousWheel = (previousEntry != null) ? previousEntry.getValue() : wheels.get(pos - 1);</span>
+            
+<span class="fc" id="L123">                newWheelToAdd = (Wheel) wheelClass.getDeclaredConstructor(Wheel.class)</span>
+<span class="fc" id="L124">                                                  .newInstance(previousWheel);</span>
+<span class="fc" id="L125">            }else {</span>
+                // Constructor por defecto para ruedas estándar (como Rebel)
+<span class="fc" id="L127">                newWheelToAdd = (Wheel) wheelClass.getDeclaredConstructor()</span>
+<span class="fc" id="L128">                                                  .newInstance();</span>
+            }
+        
+<span class="fc" id="L131">            newWheelToAdd.setPositionWheel(pos);</span>
+<span class="fc" id="L132">            wheels.put(pos, newWheelToAdd);</span>
+<span class="fc bfc" id="L133" title="All 2 branches covered.">            if (Updatable.class.isAssignableFrom(wheelClass)) thingsToUpdate.add((Updatable) newWheelToAdd);// Bloque ayudado a hacer por Gemini Pro 3.1</span>
+<span class="fc" id="L134">            adjustWheels(); </span>
+<span class="pc bpc" id="L135" title="1 of 2 branches missed.">            if (isVisible) {</span>
+<span class="nc" id="L136">                newWheelToAdd.makeVisible();</span>
+            }
+<span class="fc" id="L138">            isOk = true;</span>
+<span class="nc" id="L139">            } catch (ClassNotFoundException e) {</span>
+<span class="nc" id="L140">                System.out.println(&quot;Error: The class '&quot; + type + &quot;' does not exist in the project.&quot;);</span>
+<span class="nc" id="L141">            } catch (Exception e) {</span>
+<span class="nc" id="L142">                System.out.println(&quot;Error while attempting to create the wheel instance:&quot; + e.getMessage());</span>
+<span class="pc" id="L143">            }</span>
+<span class="fc" id="L144">    }</span>
+    
+    /**To remove a wheel, pass its left or right position.
+     * If a wheel with a wheel to its right is removed, all wheels on the right move one position to the left
+     * @param pos pos is the position of wheel
+     */
+    public void delWheel(int pos) {//Ayudado a perfeccionar con Gemini Pro Avanzado IA
+<span class="fc" id="L151">        isOk = false;</span>
+<span class="fc" id="L152">        boolean isWheelsEmpty = wheels.isEmpty();</span>
+<span class="pc bpc" id="L153" title="1 of 2 branches missed.">        if (isWheelsEmpty) {</span>
+<span class="nc" id="L154">            errorMessage(&quot;Esa acción no se puede realizar.&quot;);</span>
+<span class="nc" id="L155">            return;</span>
+        }
+        // Auto-ajustar la posición sin lanzar error
+<span class="fc" id="L158">        pos = adjustPosition(pos, false); </span>
+        
+<span class="fc" id="L160">        Wheel wheelToDelete = wheels.get(pos);</span>
+<span class="fc" id="L161">        boolean isWheelToDeleteLocked = wheelToDelete.isLocked(), canDeleteWheel = wheelToDelete.canDelete();</span>
+<span class="pc bpc" id="L162" title="1 of 4 branches missed.">        if (isWheelToDeleteLocked || canDeleteWheel) {</span>
+<span class="fc" id="L163">            errorMessage(&quot;Esa acción no se puede realizar.&quot;);</span>
+<span class="fc" id="L164">            return;</span>
+        }
+        
+<span class="nc" id="L167">        wheelToDelete.makeInvisible();</span>
+<span class="nc" id="L168">        wheels.remove(pos);</span>
+        
+        // Desplazar las llaves del mapa hacia la izquierda
+<span class="nc" id="L171">        NavigableMap&lt;Integer, Wheel&gt; cutMapWheels = wheels.tailMap(pos, false);</span>
+<span class="nc" id="L172">        List&lt;Integer&gt; keysToShift = new ArrayList&lt;&gt;(cutMapWheels.keySet());</span>
+<span class="nc bnc" id="L173" title="All 2 branches missed.">        for (Integer key : keysToShift) {</span>
+<span class="nc" id="L174">            Wheel wheelToMove = wheels.remove(key);</span>
+<span class="nc" id="L175">            wheelToMove.setPositionWheel(key - 1); // Actualiza internamente el atributo</span>
+<span class="nc" id="L176">            wheels.put(key - 1, wheelToMove);      // Lo guarda en la nueva posición</span>
+<span class="nc" id="L177">        }</span>
+<span class="nc" id="L178">        adjustWheels(); </span>
+<span class="nc" id="L179">        isOk = true;</span>
+<span class="nc" id="L180">    }</span>
+
+    /**The symbol object is created at a specific position and color.
+     * @param pos pos is the position of wheel going to add symbol.
+     * @param color color is the color of symbol that going to be created.
+     */
+    public void addSymbol(int pos, String color) {
+<span class="fc" id="L187">        boolean isAprovedInvariant = proofInvariant(pos, false);</span>
+<span class="fc bfc" id="L188" title="All 2 branches covered.">        if (!isAprovedInvariant) return;</span>
+<span class="fc" id="L189">        Wheel wheelToAddSymbol = wheels.get(pos);</span>
+<span class="fc" id="L190">        Symbol symbolToAdd = new Symbol(color);</span>
+<span class="fc" id="L191">        wheelToAddSymbol.addSymbol(symbolToAdd);</span>
+<span class="fc" id="L192">        isOk = true;</span>
+<span class="fc" id="L193">    }</span>
+
+    /** The symbol; on each wheel is removed, object is deleted.
+     * @param symbol symbol is the type of symbol that going to be deleted.
+     */
+    public void delSymbol(String symbol) {
+<span class="fc" id="L199">        isOk = false;</span>
+<span class="fc bfc" id="L200" title="All 2 branches covered.">        for (Wheel wheel : wheels.values()) {</span>
+<span class="fc" id="L201">            wheel.delSymbol(symbol);</span>
+<span class="fc" id="L202">        }</span>
+<span class="fc" id="L203">        isOk = true;</span>
+<span class="fc" id="L204">    }</span>
+
+    /** The symbol is added to each wheel; shape and wheel number are requested.
+     * @param wheel wheel is the number (integer) of wheel that will add the symbol. 
+     * @param symbol symbol is the type of symbol that will be added at the specific number wheel.
+     */
+    public void placeSymbol(int wheel, String symbol) {
+<span class="fc" id="L211">        boolean isAprovedInvariant = proofInvariant(wheel, false);</span>
+<span class="pc bpc" id="L212" title="1 of 2 branches missed.">        if (!isAprovedInvariant) {</span>
+<span class="nc" id="L213">            ok();</span>
+<span class="nc" id="L214">            return;    </span>
+        }
+<span class="fc" id="L216">        Wheel wheelToPlaceSymbol = wheels.get(wheel);</span>
+<span class="fc" id="L217">        isOk = wheelToPlaceSymbol.placeSymbol(symbol); </span>
+<span class="fc" id="L218">    }</span>
+
+    /**Moves a specific number of wheel.
+     * @param wheel wheel indicates the number (integer) of wheel that going to be moved.
+     */
+    public void spin(int wheel) {
+<span class="fc" id="L224">        boolean isAprovedInvariant = proofInvariant(wheel, false);</span>
+<span class="pc bpc" id="L225" title="1 of 2 branches missed.">        if (!isAprovedInvariant) return;</span>
+<span class="fc" id="L226">        wheel = adjustPosition(wheel, false); </span>
+<span class="fc" id="L227">        Wheel wheelToSpin = wheels.get(wheel);</span>
+<span class="fc bfc" id="L228" title="All 2 branches covered.">        if (Updatable.class.isAssignableFrom(wheelToSpin.getClass())) update((Updatable) wheelToSpin);</span>
+<span class="fc" id="L229">        boolean canWheelSpin = wheelToSpin.canSpin();</span>
+<span class="fc bfc" id="L230" title="All 2 branches covered.">        if (canWheelSpin) {</span>
+<span class="fc" id="L231">            wheelToSpin.spin();</span>
+        }
+        
+<span class="fc" id="L234">        isOk = canWheelSpin; // Si está bloqueada, esto será false</span>
+<span class="fc" id="L235">        ok();</span>
+<span class="fc" id="L236">    }</span>
+    
+
+    /**Moves each of the wheels.
+     */
+    public void spin() {
+<span class="fc" id="L242">        isOk = false;</span>
+<span class="fc" id="L243">        boolean canWheelSpin = false, allCanSpin = true;</span>
+<span class="fc bfc" id="L244" title="All 2 branches covered.">        for (Wheel wheel : wheels.values()) {</span>
+<span class="fc" id="L245">            canWheelSpin = wheel.canSpin();</span>
+<span class="fc bfc" id="L246" title="All 2 branches covered.">            if (canWheelSpin) {</span>
+<span class="fc" id="L247">                wheel.spin();</span>
+            } else {
+<span class="fc" id="L249">                allCanSpin = false;</span>
+            }
+<span class="fc" id="L251">        }</span>
+<span class="fc" id="L252">        update();</span>
+<span class="fc" id="L253">        isOk = allCanSpin;</span>
+<span class="fc" id="L254">        ok();</span>
+<span class="fc" id="L255">    }</span>
+
+    /**Displays all existing symbol colors in order.
+     * @return A string array with exiting symbols colors of this slot machine.
+     */
+    public String[] symbols() {
+<span class="fc" id="L261">        isOk = false;</span>
+<span class="fc" id="L262">        ArrayList&lt;String&gt; colorSymbols = new ArrayList&lt;&gt;();    </span>
+<span class="fc" id="L263">        String[] symbolsWheel = null;</span>
+<span class="fc bfc" id="L264" title="All 2 branches covered.">        for (Wheel wheel : wheels.values()) {</span>
+<span class="fc" id="L265">            symbolsWheel = wheel.symbols();</span>
+<span class="fc bfc" id="L266" title="All 2 branches covered.">            for (String color : symbolsWheel) {</span>
+<span class="fc" id="L267">                colorSymbols.add(color);</span>
+            }
+<span class="fc" id="L269">        }</span>
+<span class="fc" id="L270">        String[] symbols = colorSymbols.toArray(new String[0]);</span>
+<span class="fc" id="L271">        isOk = true;</span>
+<span class="fc" id="L272">        return symbols;</span>
+    }
+
+    /**Displays the number of distinct colors among the symbols on the wheel that are flipped.
+     * @return Number of distinct colors of the flipped symbols.
+     */
+    public int distinctSymbols() {
+<span class="fc" id="L279">        isOk = false;</span>
+<span class="fc" id="L280">        int countDistincSymbols = 0;</span>
+<span class="fc" id="L281">        Map&lt;String, Integer&gt; infoAllSymbols = getAllSymbolsAtSlotMachine();</span>
+<span class="fc bfc" id="L282" title="All 2 branches covered.">        for (Integer numTimesColorRepeat : infoAllSymbols.values()) {</span>
+<span class="fc bfc" id="L283" title="All 2 branches covered.">            if (numTimesColorRepeat.equals(1)) {</span>
+<span class="fc" id="L284">                countDistincSymbols++;</span>
+            }
+<span class="fc" id="L286">        }</span>
+<span class="fc" id="L287">        Set&lt;String&gt; colorSymbols = new HashSet&lt;&gt;();</span>
+<span class="fc" id="L288">        String[] symbolsWheel = null;</span>
+<span class="fc bfc" id="L289" title="All 2 branches covered.">        for (Wheel wheel : wheels.values()) {</span>
+<span class="fc" id="L290">            symbolsWheel = wheel.symbols();</span>
+<span class="fc bfc" id="L291" title="All 2 branches covered.">            for (String color : symbolsWheel){</span>
+<span class="fc" id="L292">                colorSymbols.add(color);</span>
+            }
+<span class="fc" id="L294">        }</span>
+<span class="fc" id="L295">        isOk = true;</span>
+<span class="fc" id="L296">        return countDistincSymbols;</span>
+    }
+    
+    private int distinctSymbolsVisible() {
+<span class="nc" id="L300">        isOk = false;</span>
+<span class="nc" id="L301">        List&lt;String&gt; visibleColors = getColorSymbolWheels();</span>
+<span class="nc" id="L302">        Set&lt;String&gt; uniqueVisibleColors = new HashSet&lt;&gt;(visibleColors);</span>
+<span class="nc" id="L303">        isOk = true;</span>
+<span class="nc" id="L304">        return uniqueVisibleColors.size();</span>
+    }
+
+    /**Gives all colors selected by the wheels from left to right.
+     * @return return an array of string with the symbols selected at the wheels.
+     */
+    public String[] configuration() {
+<span class="fc" id="L311">        isOk = false;</span>
+<span class="fc" id="L312">        List&lt;String&gt; colorSymbols = getColorSymbolWheels();</span>
+<span class="fc" id="L313">        String[] symbols = colorSymbols.toArray(new String[0]);</span>
+<span class="fc" id="L314">        isOk = true;</span>
+<span class="fc" id="L315">        return symbols;</span>
+    }
+
+    /**Tells whether all shapes selected by the wheels are identical.
+     * @return true if all shapes selected by the wheels are identical,
+     * false otherwise
+     */
+    public boolean isJackpot() {
+<span class="fc" id="L323">        isOk = false;</span>
+<span class="fc" id="L324">        List&lt;String&gt; colorSymbols = getColorSymbolWheels();</span>
+<span class="fc" id="L325">        String firstColor = colorSymbols.get(0);</span>
+<span class="fc" id="L326">        boolean hasTheSameColor = false;</span>
+<span class="fc bfc" id="L327" title="All 2 branches covered.">        for (String color : colorSymbols) {</span>
+<span class="fc" id="L328">            hasTheSameColor = firstColor.equals(color);</span>
+<span class="fc bfc" id="L329" title="All 2 branches covered.">            if (!hasTheSameColor) {</span>
+<span class="fc" id="L330">                isOk = true;</span>
+<span class="fc" id="L331">                return false;</span>
+            }
+<span class="fc" id="L333">        }</span>
+<span class="fc" id="L334">        isOk = true;</span>
+<span class="fc" id="L335">        return true;</span>
+    }
+
+    /**Makes the slot machine visible.
+     */
+    public void makeVisible() {
+<span class="fc" id="L341">        isOk = false;</span>
+<span class="fc" id="L342">        isVisible = true;</span>
+<span class="fc" id="L343">        bodySlotMachine.makeVisible();</span>
+<span class="fc bfc" id="L344" title="All 2 branches covered.">        for (Wheel wheel : wheels.values()) {</span>
+<span class="fc" id="L345">            wheel.makeVisible();</span>
+<span class="fc" id="L346">        }</span>
+<span class="fc" id="L347">        isOk = true;</span>
+<span class="fc" id="L348">    }</span>
+
+    /**Makes the slot machine invisible.
+     */
+    public void makeInvisible() {
+<span class="fc" id="L353">        isOk = false;</span>
+<span class="fc" id="L354">        isVisible = false;</span>
+<span class="fc bfc" id="L355" title="All 2 branches covered.">        for (Wheel wheel : wheels.values()) {</span>
+<span class="fc" id="L356">            wheel.makeInvisible();</span>
+<span class="fc" id="L357">        }</span>
+<span class="fc" id="L358">        bodySlotMachine.makeInvisible();</span>
+<span class="fc" id="L359">        isOk = true;</span>
+<span class="fc" id="L360">    }</span>
+
+    /**Deletes all objects and close the windows.
+     */
+    public void exit() {
+<span class="pc bpc" id="L365" title="1 of 2 branches missed.">        if (wheels != null) {</span>
+<span class="fc" id="L366">            wheels.clear();</span>
+        }
+<span class="fc" id="L368">        Canvas.getCanvas().close();</span>
+<span class="fc" id="L369">        isOk = true;</span>
+<span class="fc" id="L370">    }</span>
+    
+    /**Indicates whether the last operation was successful.
+     * @return True if the operation was successful,
+     * False otherwise.
+     */
+    public boolean ok() {
+<span class="fc bfc" id="L377" title="All 4 branches covered.">        if (!isOk &amp;&amp; isVisible) {</span>
+<span class="fc" id="L378">            errorMessage(&quot;Esa acción no se puede realizar&quot;);</span>
+        }
+<span class="fc" id="L380">        return isOk;</span>
+    }
+    
+    /**Swap two specific wheel of position 
+     * @param wheel1 wheel1 is the number of first wheel at the slotmachine that will be swaped by second wheel.
+     * @param wheel2 wheel2 is the nunmber of second wheel at the slotmachine that will be swaped by first wheel.
+     */
+    public void swap(int wheel1, int wheel2) {
+<span class="pc bpc" id="L388" title="1 of 2 branches missed.">        if (!proofInvariant(wheel1, false)) return;</span>
+<span class="pc bpc" id="L389" title="1 of 2 branches missed.">        if (!proofInvariant(wheel2, false)) return;</span>
+<span class="fc" id="L390">        Wheel findedWheel1 = wheels.get(wheel1);</span>
+<span class="fc" id="L391">        Wheel findedWheel2 = wheels.get(wheel2);</span>
+<span class="pc bpc" id="L392" title="1 of 4 branches missed.">        boolean canSwapWheels = !findedWheel1.isLocked() &amp;&amp; !findedWheel2.isLocked();</span>
+<span class="fc bfc" id="L393" title="All 2 branches covered.">        if (canSwapWheels) {</span>
+<span class="fc" id="L394">            findedWheel1.swap(findedWheel2);</span>
+<span class="fc" id="L395">            wheels.put(wheel1, findedWheel2);// Establecen las posiciones en el lugar correcto</span>
+<span class="fc" id="L396">            wheels.put(wheel2, findedWheel1);</span>
+<span class="fc" id="L397">            adjustWheels();</span>
+<span class="fc" id="L398">            isOk = true;</span>
+        } else {
+<span class="fc" id="L400">            isOk = false; // Falla porque alguna o las dos estám bloqueada</span>
+        }
+<span class="fc" id="L402">    }</span>
+    
+    /**This locked a specific wheel to this wheel can't spin
+     * @param wheel wheel is an integer that means the number of this slotmachine; That wheel will be locked. 
+     */
+    public void lock(int wheel) {
+<span class="pc bpc" id="L408" title="1 of 2 branches missed.">        if (!proofInvariant(wheel, false)) return;</span>
+<span class="fc" id="L409">        Wheel wheelToLock = wheels.get(wheel);</span>
+<span class="fc" id="L410">        wheelToLock.lock();</span>
+<span class="fc" id="L411">        isOk = false;</span>
+<span class="fc" id="L412">    }</span>
+    
+    /**Make a wheel unlock, this able to the wheel spin corectly 
+     * @param wheel wheel is an integer that means the number of this slotmachine; That wheel will be locked. 
+     */
+    public void unlock(int wheel) {
+<span class="pc bpc" id="L418" title="1 of 2 branches missed.">       if (!proofInvariant(wheel, false)) return;</span>
+<span class="fc" id="L419">        Wheel wheelToUnlock = wheels.get(wheel);</span>
+<span class="fc" id="L420">        wheelToUnlock.unlock();</span>
+<span class="fc" id="L421">        isOk = true;</span>
+<span class="fc" id="L422">    }</span>
+    
+    /**Makes a update visually of SlotMachine
+     * 
+     */
+    public void frameFlickering() {
+<span class="fc" id="L428">        isOk = false;</span>
+<span class="fc" id="L429">        isVisible = true;</span>
+<span class="fc" id="L430">        bodySlotMachine.frameFlickering();</span>
+<span class="pc bpc" id="L431" title="1 of 2 branches missed.">        for (Wheel wheel : wheels.values()) {</span>
+<span class="nc" id="L432">            wheel.frameFlickering();</span>
+<span class="nc" id="L433">        }</span>
+<span class="fc" id="L434">        isOk = true;</span>
+<span class="fc" id="L435">    }</span>
+    
+    /**Spin a specific wheel a specific steps
+     * @param wheel wheel is the number of wheel will be to spined,
+     * @param steps steps is the number of symbols the specific wheel will be moved.
+     */
+    public void spin(int wheel, int steps) throws InterruptedException {
+<span class="pc bpc" id="L442" title="1 of 2 branches missed.">        if (!proofInvariant(wheel, false)) return;</span>
+<span class="fc" id="L443">        Wheel wheelToSpin = wheels.get(wheel);</span>
+        
+<span class="pc bpc" id="L445" title="1 of 2 branches missed.">        if (Updatable.class.isAssignableFrom(wheelToSpin.getClass())) update((Updatable) wheelToSpin);</span>
+        
+<span class="fc bfc" id="L447" title="All 2 branches covered.">        if (isVisible) {</span>
+<span class="fc" id="L448">            wheelToSpin.spinSlowly(steps);</span>
+<span class="pc bpc" id="L449" title="1 of 2 branches missed.">        } else if (!isVisible) {</span>
+<span class="fc" id="L450">            wheelToSpin.spin(steps);</span>
+        }
+<span class="fc" id="L452">        boolean canSpin = wheelToSpin.canSpin();</span>
+<span class="fc" id="L453">        isOk = canSpin;</span>
+<span class="fc" id="L454">        ok();</span>
+<span class="fc" id="L455">        isOk = true;</span>
+<span class="fc" id="L456">    }</span>
+    
+    /**Spin the wheels to place an specific configuration given.
+     * @param setSymbols setSymbols is the specific configuration that if it's possible can set, this will be to setted.
+     */
+    public void spin(String[] setSymbols) {
+<span class="fc" id="L462">        isOk = false;</span>
+<span class="fc" id="L463">        int lengthArray = setSymbols.length;</span>
+<span class="pc bpc" id="L464" title="1 of 2 branches missed.">        boolean specificInvariant = lengthArray == wheels.size();</span>
+<span class="pc bpc" id="L465" title="1 of 2 branches missed.">        if (!specificInvariant) { // No cumple la condición para hacerse </span>
+<span class="nc" id="L466">            ok();</span>
+<span class="nc" id="L467">            return;</span>
+        } 
+<span class="fc" id="L469">        boolean allPlaced = true;</span>
+<span class="fc" id="L470">        String specificSymbolToPut = null;</span>
+<span class="fc bfc" id="L471" title="All 2 branches covered.">        for (int i = 0; i &lt; lengthArray; i++) {</span>
+<span class="fc" id="L472">            specificSymbolToPut = setSymbols[i];</span>
+<span class="fc" id="L473">            placeSymbol(i+1, specificSymbolToPut);</span>
+<span class="fc" id="L474">            allPlaced &amp;= isOk;   // acumula si alguna falló</span>
+        }
+<span class="fc" id="L476">        isOk = allPlaced;</span>
+<span class="fc" id="L477">    }</span>
+    
+    public Map&lt;Integer, Wheel&gt; getWheels() {
+<span class="fc" id="L480">        return wheels;</span>
+    }
+    
+    public static void main(String[] args) {
+<span class="nc" id="L484">        SlotMachine game = new SlotMachine();</span>
+<span class="nc" id="L485">        game.makeVisible();</span>
+<span class="nc" id="L486">    }</span>
+    
+    protected  Wheel wheelsGet(int i) {
+<span class="fc" id="L489">        return wheels.get(i);</span>
+    }
+    
+    /* Obtains information of all symbol of all wheel (Key: Color, Value: time color repeats).
+     * @return A map with the information of all symbol of SlotMachine 
+     */
+    private Map&lt;String, Integer&gt; getAllSymbolsAtSlotMachine() {
+<span class="fc" id="L496">        Map&lt;String, Integer&gt; allSymbols = new HashMap&lt;&gt;();</span>
+<span class="fc bfc" id="L497" title="All 2 branches covered.">        for (Wheel wheel : wheels.values()) {</span>
+<span class="fc" id="L498">            wheel.getInformationSymbols(allSymbols);</span>
+<span class="fc" id="L499">        }</span>
+<span class="fc" id="L500">        return allSymbols;</span>
+    }
+    
+    /*
+     * Error message this going to apperear at the screen
+     * This only apper if simulator is visible
+     */
+    private void errorMessage(String messageError) {
+<span class="fc bfc" id="L508" title="All 2 branches covered.">        if (isVisible) {</span>
+<span class="fc" id="L509">            JOptionPane.showMessageDialog( </span>
+                null, 
+                messageError,  // Mensaje de la ventana
+                &quot;Invalid Action&quot;,  //Mensaje del titulo de la ventana
+                JOptionPane.ERROR_MESSAGE
+            );
+        }
+<span class="fc" id="L516">    }</span>
+    
+    private boolean proofInvariant(int pos, boolean isAdding) { // Ayudado a perfeccionar con Gemini Pro Avanzado IA
+<span class="fc" id="L519">        isOk = false;</span>
+<span class="pc bpc" id="L520" title="1 of 2 branches missed.">        int sizeWheels = wheels.size(), plusSize = isAdding ? 1 : 0;</span>
+<span class="fc bfc" id="L521" title="All 4 branches covered.">        boolean wheelExists = wheels.containsKey(pos), isOutBoundPos = pos &lt;= 0 || pos &gt; sizeWheels+plusSize;</span>
+        // Verifica posiciones negativas o saltos inválidos
+<span class="fc bfc" id="L523" title="All 2 branches covered.">        if (isOutBoundPos) {</span>
+<span class="fc" id="L524">            errorMessage(&quot;Posición inválida o no consecutiva.&quot;);</span>
+<span class="fc" id="L525">            return false;</span>
+        }
+<span class="pc bpc" id="L527" title="2 of 4 branches missed.">        boolean ifIsAddingIsExistsPosition = isAdding ? wheelExists : !wheelExists;</span>
+        // Valida la existencia según la acción (agregar vs modificar)
+<span class="pc bpc" id="L529" title="1 of 2 branches missed.">        if (ifIsAddingIsExistsPosition) {</span>
+<span class="nc bnc" id="L530" title="All 2 branches missed.">            String messageToShow = isAdding ? &quot;La posición ya está repetida.&quot; : &quot;La rueda no existe.&quot;;</span>
+<span class="nc" id="L531">            errorMessage(messageToShow);</span>
+<span class="nc" id="L532">            return false;</span>
+        }
+<span class="fc" id="L534">        return true; // Retorna true si pasó todas las pruebas</span>
+    }
+    
+    private void adjustWheels() {
+<span class="fc" id="L538">        int currentX = 20;</span>
+<span class="fc bfc" id="L539" title="All 2 branches covered.">        for (Wheel wheel : wheels.values()) {</span>
+<span class="fc" id="L540">            wheel.changePosition(currentX, 50);</span>
+<span class="fc" id="L541">            currentX += 50;</span>
+<span class="fc" id="L542">        }</span>
+<span class="fc" id="L543">    }</span>
+    
+    private List&lt;String&gt; getColorSymbolWheels() {
+<span class="fc" id="L546">        ArrayList&lt;String&gt; colorSymbols = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L547">        Symbol selectedSymbolWheel = null;</span>
+<span class="fc" id="L548">        boolean existsSelectedSymbol = false;</span>
+<span class="fc" id="L549">        String colorSelectedSymbol = null;</span>
+<span class="fc bfc" id="L550" title="All 2 branches covered.">        for (Wheel wheel : wheels.values()) {</span>
+<span class="fc" id="L551">            selectedSymbolWheel = wheel.getSelectedSymbol();</span>
+<span class="fc bfc" id="L552" title="All 2 branches covered.">            existsSelectedSymbol = selectedSymbolWheel != null;</span>
+<span class="fc bfc" id="L553" title="All 2 branches covered.">            if (existsSelectedSymbol) {</span>
+<span class="fc" id="L554">                colorSelectedSymbol = selectedSymbolWheel.getColor();</span>
+<span class="fc" id="L555">                colorSymbols.add(colorSelectedSymbol);</span>
+            }
+<span class="fc" id="L557">        }</span>
+<span class="fc" id="L558">        return colorSymbols;</span>
+    }
+    
+    // Ajusta la posición para cumplir con los límites descritos en el documento
+    private int adjustPosition(int pos, boolean isAdding) { // Ayudado a hacer por Gemini IA
+<span class="fc bfc" id="L563" title="All 2 branches covered.">        int max = wheels.size() + (isAdding ? 1 : 0);</span>
+<span class="pc bpc" id="L564" title="1 of 2 branches missed.">        if (max == 0) return 1; </span>
+        
+<span class="fc bfc" id="L566" title="All 2 branches covered.">        if (pos &lt; 1) {</span>
+<span class="fc" id="L567">            return 1;</span>
+<span class="pc bpc" id="L568" title="1 of 2 branches missed.">        } else if (pos &gt; max) {</span>
+<span class="nc" id="L569">            return max;</span>
+        }
+<span class="fc" id="L571">        return pos;</span>
+    }
+    
+    
+    // ------------------------------------------------------------------------------------
+    private void different() {
+<span class="nc" id="L577">        int oldK = k;</span>
+<span class="nc bnc" id="L578" title="All 2 branches missed.">        for (int i = 2; i &lt;= n; i++) {</span>
+<span class="nc" id="L579">            int maxKPosition = 0;</span>
+        
+<span class="nc bnc" id="L581" title="All 2 branches missed.">            for (int u = 1; u &lt;= n; u++) {</span>
+<span class="nc" id="L582">                printOI(i, 1);</span>
+        
+<span class="nc bnc" id="L584" title="All 2 branches missed.">                if (k == 1) {</span>
+<span class="nc" id="L585">                    return;</span>
+                }
+        
+<span class="nc bnc" id="L588" title="All 2 branches missed.">                if (oldK &lt; k) {</span>
+<span class="nc" id="L589">                    maxKPosition = u;</span>
+<span class="nc" id="L590">                    oldK = k;</span>
+                }
+            }
+        
+<span class="nc bnc" id="L594" title="All 2 branches missed.">            if (maxKPosition != 0) {</span>
+<span class="nc" id="L595">                printOI(i, maxKPosition);</span>
+        
+<span class="nc bnc" id="L597" title="All 2 branches missed.">                if (k == 1) {</span>
+<span class="nc" id="L598">                    return;</span>
+                }
+            }
+    
+        }
+<span class="nc" id="L603">    }</span>
+    private int[] identical() {
+<span class="nc" id="L605">        int[] moves = new int[n + 1];</span>
+
+<span class="nc bnc" id="L607" title="All 2 branches missed.">        for (int i = 1; i &lt; n; i++) {</span>
+<span class="nc" id="L608">            printOI(1, 1);</span>
+        
+<span class="nc bnc" id="L610" title="All 2 branches missed.">            if (k == 1) {</span>
+<span class="nc" id="L611">                return moves;</span>
+            }
+        
+<span class="nc" id="L614">            int oldK = k;</span>
+        
+<span class="nc bnc" id="L616" title="All 2 branches missed.">            for (int u = 2; u &lt;= n; u++) {</span>
+<span class="nc" id="L617">                printOI(u, -i);</span>
+        
+<span class="nc bnc" id="L619" title="All 2 branches missed.">                if (k == 1) {</span>
+<span class="nc" id="L620">                    return moves;</span>
+                }
+        
+<span class="nc bnc" id="L623" title="All 2 branches missed.">                if (oldK &lt; k) {</span>
+<span class="nc" id="L624">                    moves[u] = i;</span>
+<span class="nc" id="L625">                    printOI(u, i);</span>
+        
+<span class="nc bnc" id="L627" title="All 2 branches missed.">                    if (k == 1) {</span>
+<span class="nc" id="L628">                        return moves;</span>
+                    }
+        
+                    break;
+                } else {
+<span class="nc" id="L633">                    printOI(u, i);</span>
+        
+<span class="nc bnc" id="L635" title="All 2 branches missed.">                    if (k == 1) {</span>
+<span class="nc" id="L636">                        return moves;</span>
+                    }
+                }
+            }
+        }
+
+<span class="nc" id="L642">        printOI(1, 1);</span>
+        
+<span class="nc" id="L644">        return moves;</span>
+    }
+    
+    private void printOI(int i, int u) {
+<span class="nc" id="L648">        steps.add(new int[]{i,u});</span>
+<span class="nc" id="L649">        Wheel targetWheel = wheels.get(i);</span>
+<span class="nc" id="L650">        targetWheel.changePositionSymbol(u);</span>
+<span class="nc" id="L651">        k = distinctSymbolsVisible();</span>
+<span class="nc" id="L652">    }</span>
+    
+    private void update() {
+<span class="fc bfc" id="L655" title="All 2 branches covered.">        for (Updatable toUpdate : thingsToUpdate) {</span>
+<span class="fc" id="L656">            toUpdate.update();</span>
+<span class="fc" id="L657">        }</span>
+<span class="fc" id="L658">    }</span>
+    
+    private void update(Updatable thingToUpdate) {
+<span class="pc bpc" id="L661" title="1 of 2 branches missed.">        if (thingsToUpdate.remove(thingToUpdate)) {</span>
+<span class="fc" id="L662">            thingToUpdate.update();</span>
+<span class="fc" id="L663">            thingsToUpdate.add(thingToUpdate);</span>
+        }
+<span class="fc" id="L665">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

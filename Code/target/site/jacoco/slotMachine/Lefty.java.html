@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Lefty.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">slotmachine</a> &gt; <a href="index.source.html" class="el_package">slotMachine</a> &gt; <span class="el_source">Lefty.java</span></div><h1>Lefty.java</h1><pre class="source lang-java linenums">package slotMachine;
+import java.util.Map;
+import java.util.TreeMap;
+
+
+/**
+ * Write a description of class Lefty here.
+ * 
+ * @author (your name) 
+ * @version (a version number or a date)
+ */
+public class Lefty extends Wheel implements Updatable {
+    private Wheel wheelToCopy;
+    
+<span class="fc" id="L15">    public Lefty(Wheel wheelToCopy) {</span>
+<span class="pc bpc" id="L16" title="1 of 2 branches missed.">        if (this.positionWheel != 1) this.wheelToCopy = wheelToCopy;</span>
+<span class="fc" id="L17">    }</span>
+    
+    public void update() {
+<span class="fc" id="L20">        copyWheel();</span>
+<span class="fc" id="L21">        boolean isVisible = this.wheelShape.isVisible();</span>
+<span class="pc bpc" id="L22" title="1 of 2 branches missed.">        if (isVisible) {</span>
+<span class="nc" id="L23">            this.wheelShape.frameFlickering();</span>
+        }
+<span class="fc" id="L25">    }</span>
+    
+    private void copyWheel() {
+<span class="fc" id="L28">        int positionWheelCopy = wheelToCopy.getPositionWheel(), selectedSymbolIntToCopy = wheelToCopy.getSelectedSymbolInteger();</span>
+<span class="fc" id="L29">        boolean isLockedToCopy = wheelToCopy.isLocked();</span>
+<span class="fc" id="L30">        Symbol selectedSymbolToCopy = wheelToCopy.getSelectedSymbol();</span>
+<span class="fc" id="L31">        Map&lt;Integer,Symbol&gt; symbolsToCopy = wheelToCopy.getSymbols();</span>
+<span class="pc bpc" id="L32" title="1 of 2 branches missed.">        if (this.positionWheel != 1) {</span>
+<span class="fc" id="L33">            this.selectedSymbolInteger = selectedSymbolIntToCopy;</span>
+<span class="fc" id="L34">            this.isLocked = isLockedToCopy;</span>
+<span class="fc" id="L35">            this.selectedSymbol = selectedSymbolToCopy;</span>
+<span class="fc" id="L36">            this.symbols = new TreeMap&lt;&gt;(symbolsToCopy);</span>
+<span class="nc bnc" id="L37" title="All 2 branches missed.">        } else if (this.positionWheel == 1) {</span>
+<span class="nc" id="L38">            throw new SlotMachineException(SlotMachineException.CANT_LEFT_COPY_WHEEL);</span>
+        }
+<span class="fc" id="L40">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

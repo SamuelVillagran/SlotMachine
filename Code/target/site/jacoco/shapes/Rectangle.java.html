@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Rectangle.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">slotmachine</a> &gt; <a href="index.source.html" class="el_package">shapes</a> &gt; <span class="el_source">Rectangle.java</span></div><h1>Rectangle.java</h1><pre class="source lang-java linenums">package shapes;
+import java.awt.*;
+
+/**
+ * A rectangle that can be manipulated and that draws itself on a canvas.
+ * 
+ * @author  Michael Kolling and David J. Barnes (Modified)
+ * @version 1.0  (15 July 2000)()
+ */
+public class Rectangle extends Polygon2D {
+
+    public static final int EDGES = 4;
+    
+    
+    /**
+     * Create a new rectangle at default position with default color.
+     */
+    public Rectangle(){
+<span class="fc" id="L19">        super(70, 15, &quot;green&quot;);</span>
+<span class="fc" id="L20">        height = 30;</span>
+<span class="fc" id="L21">        width = 40;</span>
+<span class="fc" id="L22">    }</span>
+    
+    public Rectangle(int xPosition, int yPosition, int height, int width, String color) {
+<span class="fc" id="L25">        super(xPosition, yPosition, color);</span>
+<span class="fc" id="L26">        this.height = height;</span>
+<span class="fc" id="L27">        this.width = width;</span>
+<span class="fc" id="L28">    }</span>
+    
+    /*
+     * Draw rectangle
+     */
+    @Override
+    public void draw() {
+<span class="fc bfc" id="L35" title="All 2 branches covered.">        if(isVisible) {</span>
+<span class="fc" id="L36">            Canvas canvas = Canvas.getCanvas();</span>
+<span class="fc" id="L37">            canvas.draw(this, color,</span>
+                new java.awt.Rectangle(xPosition, yPosition, 
+                                       width, height));
+<span class="fc" id="L40">            canvas.wait(10);</span>
+        }
+<span class="fc" id="L42">    }</span>
+    
+}
+
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

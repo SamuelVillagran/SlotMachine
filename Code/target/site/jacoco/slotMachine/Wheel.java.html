@@ -1,0 +1,527 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Wheel.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">slotmachine</a> &gt; <a href="index.source.html" class="el_package">slotMachine</a> &gt; <span class="el_source">Wheel.java</span></div><h1>Wheel.java</h1><pre class="source lang-java linenums">package slotMachine;
+
+import shapes.Rectangle;
+import java.util.NavigableMap;
+
+import java.util.List;
+import java.util.Random;
+import java.util.TreeMap;
+import java.util.ArrayList;
+import java.util.Map;
+import java.util.Set;
+import java.util.HashSet;
+import java.util.Objects;
+
+/**
+ * Wheel class, this is the wheel that will be installed on slot machine.
+ *
+ * @author Gualdron-Villagran
+ * @version 1.0
+ */
+public class Wheel {
+    protected int positionWheel;
+    protected Rectangle wheelShape; 
+    protected boolean isLocked;
+    protected Random random;
+    protected Symbol selectedSymbol;
+    protected Integer selectedSymbolInteger;
+    protected Map&lt;Integer,Symbol&gt; symbols;
+    
+    /**Constructor class of wheel, niladic method class.
+     */
+<span class="fc" id="L32">    public Wheel() {</span>
+<span class="fc" id="L33">        wheelShape = new Rectangle();</span>
+<span class="fc" id="L34">        wheelShape.changeSize(100,30);</span>
+<span class="fc" id="L35">        wheelShape.changeColor(&quot;grey&quot;);</span>
+<span class="fc" id="L36">        wheelShape.makeInvisible();</span>
+<span class="fc" id="L37">        isLocked = false;</span>
+<span class="fc" id="L38">        random = new Random();</span>
+<span class="fc" id="L39">        symbols = new TreeMap&lt;&gt;();</span>
+<span class="fc" id="L40">    }</span>
+
+    public void changePositionSymbol(int post) {
+<span class="pc bpc" id="L43" title="2 of 4 branches missed.">        if (symbols.isEmpty() || isLocked) {</span>
+<span class="nc" id="L44">            return;</span>
+        }
+<span class="pc bpc" id="L46" title="1 of 2 branches missed.">        int currentPosition = selectedSymbolInteger != null ? selectedSymbolInteger : 1;</span>
+<span class="fc" id="L47">        int totalSymbols = symbols.size();</span>
+<span class="fc" id="L48">        int newPosition = (currentPosition - 1 + post) % totalSymbols;</span>
+<span class="fc bfc" id="L49" title="All 2 branches covered.">        if (newPosition &lt; 0) {</span>
+<span class="fc" id="L50">            newPosition += totalSymbols;</span>
+        }
+<span class="fc" id="L52">        newPosition += 1; </span>
+<span class="fc" id="L53">        Symbol newSymbol = symbols.get(newPosition);</span>
+<span class="pc bpc" id="L54" title="1 of 2 branches missed.">        if (newSymbol != null) {</span>
+<span class="pc bpc" id="L55" title="1 of 4 branches missed.">            if (isVisible() &amp;&amp; selectedSymbol != null) {</span>
+<span class="fc" id="L56">                selectedSymbol.makeInvisible();</span>
+            }
+
+<span class="fc" id="L59">            selectedSymbol = newSymbol;</span>
+<span class="fc" id="L60">            selectedSymbolInteger = newPosition;</span>
+
+<span class="fc" id="L62">            positionSymbol(selectedSymbol);</span>
+<span class="fc bfc" id="L63" title="All 2 branches covered.">            if (isVisible()) {</span>
+<span class="fc" id="L64">                selectedSymbol.frameFlickering();</span>
+            }
+        }
+<span class="fc" id="L67">    }</span>
+
+    
+    
+    /**To set the wheel color.
+     * @param newColor newColor is the color that will be set on this wheel.
+     */
+    public void changeColor(String newColor) {
+<span class="fc" id="L75">        wheelShape.changeColor(newColor);</span>
+<span class="fc" id="L76">    }</span>
+
+    /**Sets a new X and Y position to this wheel.
+     * @param newPosX newPosX that going to set like x position of this wheel. 
+     * @param newPosY newPosY that going to set like y position of this wheel. 
+     */
+    public void changePosition(int newPosX, int newPosY) {
+<span class="fc" id="L83">        wheelShape.setPosition(newPosX, newPosY);</span>
+<span class="fc" id="L84">        repositionSymbols();</span>
+<span class="fc bfc" id="L85" title="All 2 branches covered.">        if (isVisible()) {</span>
+<span class="fc" id="L86">            wheelShape.frameFlickering();</span>
+<span class="fc bfc" id="L87" title="All 2 branches covered.">            boolean existsSelectedSymbol = selectedSymbol != null;</span>
+<span class="fc bfc" id="L88" title="All 2 branches covered.">            if (existsSelectedSymbol) {</span>
+<span class="fc" id="L89">                selectedSymbol.frameFlickering();</span>
+            }
+        }
+<span class="fc" id="L92">    }</span>
+    
+    public int getPositionX() {
+<span class="nc" id="L95">        return wheelShape.getXPosition();</span>
+    }
+    
+    public int getPositionY() {
+<span class="nc" id="L99">        return wheelShape.getYPosition();</span>
+    }
+    
+    /**Add a specific symbol with its color.
+     * @param color color is the color of symbol to add. ----------------------
+     */
+    public void addSymbol(String color) {
+<span class="fc" id="L106">        int sizeSymbols = symbols.size();</span>
+<span class="fc" id="L107">        Symbol symbolToAdd = new Symbol(color);</span>
+<span class="fc" id="L108">        addSymbol(symbolToAdd);</span>
+<span class="fc" id="L109">    }</span>
+
+    /** Add a specific symbol with its color.
+     * @param symbol symbol is the symbol to add to the wheel. ----------------------
+     */
+    public void addSymbol(Symbol symbol) {
+<span class="fc" id="L115">        boolean isSymbolsEmpty = symbols.isEmpty();</span>
+<span class="fc bfc" id="L116" title="All 2 branches covered.">        if (isSymbolsEmpty) {</span>
+<span class="fc" id="L117">            selectedSymbol = symbol;</span>
+<span class="fc" id="L118">            selectedSymbolInteger = symbols.size() + 1; </span>
+        }
+<span class="fc" id="L120">        symbol.setPositionAtTheWheel(symbols.size()+1);</span>
+<span class="fc" id="L121">        positionSymbol(symbol);</span>
+<span class="fc" id="L122">        symbols.put(symbol.getPositionAtTheWheel(), symbol);</span>
+<span class="fc bfc" id="L123" title="All 2 branches covered.">        if (isVisible()) {</span>
+<span class="fc bfc" id="L124" title="All 2 branches covered.">            if (symbol == selectedSymbol) {</span>
+<span class="fc" id="L125">                symbol.frameFlickering();</span>
+            } else {
+<span class="fc" id="L127">                symbol.makeInvisible();</span>
+            }
+        }
+<span class="fc" id="L130">    }</span>
+    
+    /** The symbol is added to each wheel; shape and wheel number are requested.
+     * @param symbol symbol is the type of symbol that will be added at the specific number wheel.
+     */
+    public boolean placeSymbol(String symbol) {
+<span class="fc" id="L136">        Symbol symbolToPlace = findJustColorSymbol(symbol);</span>
+<span class="fc bfc" id="L137" title="All 2 branches covered.">        boolean existsSymbol = symbolToPlace != null; </span>
+<span class="fc bfc" id="L138" title="All 4 branches covered.">        if (!existsSymbol || isLocked) return false;</span>
+        // Se toma ayuda de Gemini IA Pro Avanzado para hacer parte de este método
+        // Añadimos !isLocked para respetar las reglas de bloqueo
+        // 1. Ocultar el símbolo que está actualmente al frente
+<span class="pc bpc" id="L142" title="1 of 4 branches missed.">        if (isVisible() &amp;&amp; selectedSymbol != null) {</span>
+<span class="fc" id="L143">            selectedSymbol.makeInvisible();</span>
+        }
+            
+        // 2. Cambiar el puntero al nuevo símbolo
+<span class="fc" id="L147">        selectedSymbol = symbolToPlace;</span>
+            
+        // 3. Acomodar sus coordenadas X y Y en el centro de la rueda
+<span class="fc" id="L150">        positionSymbol(selectedSymbol);</span>
+            
+        // 4. Mostrar el nuevo símbolo si la máquina está visible
+<span class="fc bfc" id="L153" title="All 2 branches covered.">        if (isVisible()) {</span>
+<span class="fc" id="L154">            selectedSymbol.frameFlickering(); // Lo repinta para que quede encima del fondo negro</span>
+        }
+<span class="fc" id="L156">        return true;</span>
+    }
+
+    /**Remove a specific symbol with its color.
+     * @param symbol symbol is the symbol that will be removed. ---------------
+     */
+    public void delSymbol(Symbol triangle) {
+<span class="pc bpc" id="L163" title="1 of 2 branches missed.">        if (!isLocked) {</span>
+<span class="fc" id="L164">            int positionAtWheelSymbol = triangle.getPositionAtTheWheel();</span>
+<span class="fc" id="L165">            symbols.remove(positionAtWheelSymbol);</span>
+<span class="fc" id="L166">            triangle.makeInvisible();</span>
+<span class="fc" id="L167">            boolean canSpinWheel = canSpin();</span>
+<span class="pc bpc" id="L168" title="1 of 2 branches missed.">            if (canSpinWheel) { </span>
+<span class="fc" id="L169">                spin();</span>
+            }
+        }
+<span class="fc" id="L172">    }</span>
+    
+    /**Remove a specific symbol with its color.
+     * @param color color is the color of symbol that will be removed of symbols. ---------------
+     */
+    public void delSymbol(String color) {
+<span class="fc" id="L178">        String currentColorSymbol = null; </span>
+<span class="fc" id="L179">        Set&lt;Symbol&gt; symbolsV = new HashSet&lt;&gt;(symbols.values());</span>
+<span class="pc bpc" id="L180" title="1 of 2 branches missed.">        if (!isLocked) {</span>
+<span class="fc bfc" id="L181" title="All 2 branches covered.">            for (Symbol symbol : symbolsV) {</span>
+<span class="fc" id="L182">                currentColorSymbol = symbol.getColor();</span>
+<span class="fc bfc" id="L183" title="All 2 branches covered.">                if (currentColorSymbol.equals(color)) {</span>
+<span class="fc" id="L184">                    symbol.makeInvisible();</span>
+<span class="fc" id="L185">                    symbols.values().remove(symbol); // Elimina de los simbolos el color encontrado</span>
+<span class="pc bpc" id="L186" title="1 of 2 branches missed.">                    if (symbol == selectedSymbol) {</span>
+<span class="fc" id="L187">                        selectedSymbol = null;    // Si llega a estar adelante se elimina</span>
+                    }
+                }
+<span class="fc" id="L190">            }</span>
+<span class="pc bpc" id="L191" title="1 of 2 branches missed.">            boolean isSymbolsEmpty = symbols.isEmpty(), isSelectedSymbolNull = selectedSymbol == null;</span>
+<span class="pc bpc" id="L192" title="1 of 4 branches missed.">            if (!isSymbolsEmpty &amp;&amp; isSelectedSymbolNull) {</span>
+<span class="nc" id="L193">                spin(); // Si se permite que gire otra vez la ruleta hagalo</span>
+            }
+        }
+        
+<span class="fc" id="L197">    }</span>
+    
+    /**Gives the symbol that was selected when spinning the wheel.
+     * @return Returns the symbol that was selected when spinning the wheel. ----------
+     */
+    public Symbol selectedSymbol() {
+<span class="fc" id="L203">        return selectedSymbol;</span>
+    }
+    
+    /**Choose a symbol randomly.
+     */
+    public void spin() {
+<span class="fc" id="L209">        boolean canSpin = canSpin();</span>
+<span class="pc bpc" id="L210" title="1 of 2 branches missed.">        if (canSpin) {</span>
+<span class="fc" id="L211">            List&lt;Integer&gt; keys = new ArrayList&lt;&gt;(this.symbols.keySet());</span>
+<span class="fc" id="L212">            int randomIndex = random.nextInt(keys.size());</span>
+<span class="fc" id="L213">            int randomKey = keys.get(randomIndex);</span>
+<span class="fc" id="L214">            selectedSymbol.setIsSelected(false);</span>
+<span class="fc" id="L215">            selectedSymbol = symbols.get(randomKey);</span>
+<span class="fc" id="L216">            selectedSymbol.setIsSelected(true);</span>
+<span class="fc" id="L217">            selectedSymbolInteger = randomKey;</span>
+<span class="fc" id="L218">            boolean isVisible = isVisible();</span>
+<span class="fc bfc" id="L219" title="All 2 branches covered.">            for (Symbol symbol : symbols.values()) {</span>
+<span class="pc bpc" id="L220" title="1 of 2 branches missed.">                if (Updatable.class.isAssignableFrom(symbol.getClass())) ((Updatable) symbol).update();</span>
+<span class="fc" id="L221">            }</span>
+            
+<span class="fc bfc" id="L223" title="All 2 branches covered.">            if (isVisible) {</span>
+<span class="fc" id="L224">                selectedSymbol.frameFlickering();</span>
+            }
+        }
+<span class="fc" id="L227">        return;</span>
+    }
+    
+    /**Makes this wheel invisible.
+     */
+    public void makeInvisible() {
+<span class="fc" id="L233">        wheelShape.makeInvisible();</span>
+<span class="fc bfc" id="L234" title="All 2 branches covered.">        for (Symbol symbol : symbols.values()) {</span>
+<span class="fc" id="L235">            symbol.makeInvisible();</span>
+<span class="fc" id="L236">        }</span>
+<span class="fc" id="L237">    }</span>
+    
+    /** Gets the color of 
+     *
+     */
+    public String getColor() {
+<span class="fc" id="L243">        return wheelShape.getColor();</span>
+    }
+
+    /**Makes this wheel visible.
+     */
+    public void makeVisible() {
+<span class="fc" id="L249">        wheelShape.makeVisible();    </span>
+<span class="fc bfc" id="L250" title="All 2 branches covered.">        for (Symbol symbol : symbols.values()) {</span>
+<span class="fc" id="L251">            symbol.makeVisible();</span>
+<span class="fc" id="L252">        }</span>
+<span class="fc bfc" id="L253" title="All 2 branches covered.">        boolean existsSelectedSymbol = selectedSymbol != null;</span>
+<span class="fc bfc" id="L254" title="All 2 branches covered.">        if (existsSelectedSymbol) selectedSymbol.frameFlickering();</span>
+<span class="fc" id="L255">    }</span>
+
+    /**Displays all existing symbol colors in order.
+     * @return A string array with exiting symbols colors of this slot machine.
+     */
+    public String[] symbols() {
+<span class="fc" id="L261">        ArrayList&lt;Symbol&gt; list = new ArrayList&lt;&gt;(this.symbols.values());</span>
+<span class="fc" id="L262">        String[] listString = new String[list.size()];</span>
+<span class="fc" id="L263">        int indexListString = 0;</span>
+<span class="fc bfc" id="L264" title="All 2 branches covered.">        for (Symbol symbol : list) {</span>
+<span class="fc" id="L265">            listString[indexListString] = symbol.getColor();</span>
+<span class="fc" id="L266">            indexListString++;</span>
+<span class="fc" id="L267">        }</span>
+<span class="fc" id="L268">        return listString;</span>
+    }
+
+    /**
+     * Compare two wheels, if have the same data at their attributes are equals
+     */
+    public boolean equals(Wheel wheel) {
+<span class="nc bnc" id="L275" title="All 2 branches missed.">        boolean hasSamePosition = this.positionWheel == wheel.getPositionWheel();</span>
+<span class="nc bnc" id="L276" title="All 2 branches missed.">        boolean hasSameBoolean = isLocked == wheel.isLocked();</span>
+<span class="nc" id="L277">        boolean hasSameSelectedSymbol = Objects.equals(selectedSymbol, wheel.getSelectedSymbol());</span>
+<span class="nc" id="L278">        boolean hasSameSymbols = symbols.equals(wheel.getSymbols());</span>
+<span class="nc bnc" id="L279" title="All 8 branches missed.">        return hasSamePosition &amp;&amp; hasSameBoolean &amp;&amp; hasSameSelectedSymbol &amp;&amp; hasSameSymbols;</span>
+    }
+    
+    @Override
+    public boolean equals(Object obj) {
+<span class="pc bpc" id="L284" title="1 of 2 branches missed.">        if (this == obj) return true;</span>
+<span class="nc bnc" id="L285" title="All 4 branches missed.">        if (obj == null || getClass() != obj.getClass()) return false;</span>
+<span class="nc" id="L286">        Wheel wheel = (Wheel) obj;</span>
+<span class="nc" id="L287">        return this.equals(wheel);</span>
+    }
+    
+    public boolean isLocked() {
+<span class="fc" id="L291">        return isLocked;</span>
+    }
+
+    /**
+     * Checks if the element is visible.
+     */
+    public boolean isVisible() {
+<span class="fc" id="L298">        return wheelShape.isVisible();</span>
+    }
+
+    public Random getRandom() {
+<span class="nc" id="L302">        return random;</span>
+    }
+
+    /**
+     * Gets the selected symbol.
+     */
+    public Symbol getSelectedSymbol() {
+<span class="fc" id="L309">        return selectedSymbol;</span>
+    }
+
+    /**Gets the list of symbols.
+     */   
+    public Map&lt;Integer,Symbol&gt; getSymbols() {
+<span class="fc" id="L315">        return symbols;</span>
+    }
+
+    public void setPositionWheel(int positionWheel) {
+<span class="fc" id="L319">        this.positionWheel = positionWheel;</span>
+<span class="fc" id="L320">    }</span>
+    
+    public int getPositionWheel() {
+<span class="fc" id="L323">        return this.positionWheel;</span>
+    }
+    
+    public int getXPosition() {
+<span class="fc" id="L327">        return wheelShape.getXPosition();</span>
+    }
+    
+    public int getYPosition() {
+<span class="fc" id="L331">        return wheelShape.getYPosition();</span>
+    }
+    
+    /**Swap two specific wheel of position 
+     * @param wheel1 wheel1 is the number of first wheel at the slotmachine that will be swaped by second wheel.
+     * @param wheel2 wheel2 is the nunmber of second wheel at the slotmachine that will be swaped by first wheel.
+     */
+    public void swap(Wheel wheelToSwap) {
+<span class="fc" id="L339">        boolean isWheelToSwapLocked = wheelToSwap.isLocked();</span>
+<span class="pc bpc" id="L340" title="2 of 4 branches missed.">        if (!isLocked &amp;&amp; !isWheelToSwapLocked) {</span>
+<span class="fc" id="L341">            int thisPosition = this.getPositionWheel();</span>
+<span class="fc" id="L342">            int otherPosition = wheelToSwap.getPositionWheel();</span>
+<span class="fc" id="L343">            this.setPositionWheel(otherPosition);</span>
+<span class="fc" id="L344">            wheelToSwap.setPositionWheel(thisPosition); // Cambian el atributo de posición</span>
+<span class="pc bpc" id="L345" title="1 of 4 branches missed.">            if (this.isVisible() &amp;&amp; wheelToSwap.isVisible()) {</span>
+<span class="fc" id="L346">                this.frameFlickering();</span>
+<span class="fc" id="L347">                wheelToSwap.frameFlickering(); // Si son visibles entonces reponganse en el canvas</span>
+            }
+        }
+<span class="fc" id="L350">        return;</span>
+    }
+    
+    public int getNumberOfSymbols() {
+<span class="nc" id="L354">        return symbols.size();</span>
+    }
+    
+    public String[] getColorSymbolsConfiguration() {
+<span class="nc" id="L358">        int visibleCount = 0;</span>
+<span class="nc bnc" id="L359" title="All 2 branches missed.">        for (Symbol s : symbols.values()) {</span>
+<span class="nc bnc" id="L360" title="All 4 branches missed.">            if (s.getColor() != null &amp;&amp; s.isVisible()) visibleCount++;</span>
+<span class="nc" id="L361">        }</span>
+<span class="nc" id="L362">        int indexColorSymbol = 0;</span>
+<span class="nc" id="L363">        String[] colorSymbols = new String[visibleCount];</span>
+        String colorSymbol; 
+<span class="nc bnc" id="L365" title="All 2 branches missed.">        for (Symbol currentSymbol : symbols.values()) {</span>
+<span class="nc" id="L366">            colorSymbol =  currentSymbol.getColor();</span>
+<span class="nc bnc" id="L367" title="All 4 branches missed.">            if (colorSymbol != null &amp;&amp; currentSymbol.isVisible()) {</span>
+<span class="nc" id="L368">                colorSymbols[indexColorSymbol] = colorSymbol;</span>
+<span class="nc" id="L369">                indexColorSymbol++;</span>
+            }
+<span class="nc" id="L371">        }</span>
+<span class="nc" id="L372">        return colorSymbols;</span>
+    }
+    
+    public int getSizeColors() {
+<span class="nc" id="L376">        return symbols.size();</span>
+    }
+    
+    public void frameFlickering() {
+<span class="pc bpc" id="L380" title="1 of 2 branches missed.">        if (isVisible()) {</span>
+<span class="fc" id="L381">            wheelShape.frameFlickering();</span>
+<span class="fc" id="L382">            selectedSymbol.frameFlickering();</span>
+        }
+<span class="fc" id="L384">    }</span>
+    
+    public int getSelectedSymbolInteger() {
+<span class="fc" id="L387">        return (int) selectedSymbolInteger;</span>
+    }
+            
+    
+    /**This locked this wheel to can´t spin, delete and swap it.
+     */
+    public void lock() {
+<span class="fc" id="L394">        isLocked = true;</span>
+<span class="fc" id="L395">    }</span>
+    
+    /**This locked this wheel to can spin, delete and swap it.
+     */
+    public void unlock(){
+<span class="fc" id="L400">        isLocked = false;</span>
+<span class="fc" id="L401">    }</span>
+    
+    /**Gets the color and number that repeat that color.
+     * @param info info is a collection with the number that repeats a specific color. 
+     */
+    public void getInformationSymbols(Map&lt;String, Integer&gt; info) {
+        String colorSymbol;
+<span class="fc" id="L408">        Integer numTimesColor = 0;</span>
+<span class="fc bfc" id="L409" title="All 2 branches covered.">        for (Symbol symbol : symbols.values()) {</span>
+<span class="fc" id="L410">            colorSymbol = symbol.getColor();</span>
+<span class="fc bfc" id="L411" title="All 2 branches covered.">            if (info.containsKey(colorSymbol)) {</span>
+<span class="fc" id="L412">                numTimesColor = info.get(colorSymbol);</span>
+<span class="fc" id="L413">                info.put(colorSymbol, numTimesColor+1); // Se le adiciona la vez que se repite</span>
+            } else {
+<span class="fc" id="L415">                info.put(colorSymbol, 1); // Si es la primera vez se agrega a la info </span>
+            }
+<span class="fc" id="L417">        }</span>
+<span class="fc" id="L418">    }</span>
+    
+    public void spinSlowly(int steps) throws InterruptedException { //Funcionalidad ayudada a corregir por Gemini Flash 3.6
+<span class="pc bpc" id="L421" title="2 of 4 branches missed.">        if (symbols.isEmpty() || isLocked) return;</span>
+    
+        // Determina la posición actual en el TreeMap
+<span class="fc" id="L424">        NavigableMap&lt;Integer, Symbol&gt; navSymbols = (NavigableMap&lt;Integer, Symbol&gt;) symbols;</span>
+<span class="pc bpc" id="L425" title="1 of 2 branches missed.">        int currentKey = (selectedSymbol != null) ? selectedSymbol.getPositionAtTheWheel() : navSymbols.firstKey();</span>
+
+<span class="fc bfc" id="L427" title="All 2 branches covered.">        for (int i = 0; i &lt; steps; i++) {</span>
+<span class="fc" id="L428">            Symbol current = symbols.get(currentKey);</span>
+    
+            // Mueve hacia abajo el símbolo actual y lo oculta
+<span class="pc bpc" id="L431" title="2 of 4 branches missed.">            if (isVisible() &amp;&amp; current != null) {</span>
+<span class="fc" id="L432">                current.moveSlowly(25);</span>
+<span class="fc" id="L433">                current.makeInvisible();</span>
+            }
+    
+            // Avanza cíclicamente al siguiente símbolo (1..size)
+<span class="fc" id="L437">            currentKey = (currentKey % symbols.size()) + 1;</span>
+<span class="fc" id="L438">            selectedSymbol = symbols.get(currentKey);</span>
+    
+            // Posiciona y visibiliza el nuevo símbolo seleccionado
+<span class="fc" id="L441">            positionSymbol(selectedSymbol);</span>
+<span class="pc bpc" id="L442" title="1 of 2 branches missed.">            if (isVisible()) {</span>
+<span class="fc" id="L443">                selectedSymbol.makeVisible();</span>
+<span class="fc" id="L444">                selectedSymbol.frameFlickering();</span>
+            }
+    
+<span class="fc" id="L447">            Thread.sleep(700); // Pausa visual para la animación</span>
+        }
+<span class="fc" id="L449">    }</span>
+    
+    public void spin(int steps) { //Funcionalidad ayudada a corregir por Gemini Flash 3.6
+<span class="pc bpc" id="L452" title="2 of 4 branches missed.">        if (symbols.isEmpty() || isLocked) return;</span>
+        
+<span class="fc" id="L454">        NavigableMap&lt;Integer, Symbol&gt; navSymbols = (NavigableMap&lt;Integer, Symbol&gt;) symbols;</span>
+<span class="pc bpc" id="L455" title="1 of 2 branches missed.">        int currentKey = (selectedSymbol != null) ? selectedSymbol.getPositionAtTheWheel() : navSymbols.firstKey();</span>
+<span class="fc" id="L456">        int newKey = ((currentKey - 1 + steps) % symbols.size()) + 1;</span>
+    
+<span class="pc bpc" id="L458" title="3 of 4 branches missed.">        if (isVisible() &amp;&amp; selectedSymbol != null) {</span>
+<span class="nc" id="L459">            selectedSymbol.makeInvisible();</span>
+        }
+    
+<span class="fc" id="L462">        selectedSymbol = symbols.get(newKey);</span>
+<span class="fc" id="L463">        positionSymbol(selectedSymbol);</span>
+    
+<span class="pc bpc" id="L465" title="1 of 2 branches missed.">        if (isVisible()) {</span>
+<span class="nc" id="L466">            selectedSymbol.makeVisible();</span>
+        }
+<span class="fc" id="L468">    }</span>
+    
+    public void setSelectedSymbol(Symbol newSelectedSymbol) {
+<span class="fc" id="L471">        this.selectedSymbol = newSelectedSymbol;</span>
+<span class="fc" id="L472">    }</span>
+    
+    public boolean canSpin() {
+<span class="fc bfc" id="L475" title="All 4 branches covered.">        return !symbols.isEmpty() &amp;&amp; !isLocked;</span>
+    }
+    
+    public boolean canDelete() {
+<span class="fc" id="L479">        return true;</span>
+    }
+     
+    private String[] getColorSymbols() {
+<span class="nc" id="L483">        int sizeSymbols = symbols.size(), indexColorSymbol = 0;</span>
+<span class="nc" id="L484">        String[] colorSymbols = new String[sizeSymbols];</span>
+        String colorSymbol; 
+<span class="nc bnc" id="L486" title="All 2 branches missed.">        for (Symbol currentSymbol : symbols.values()) {</span>
+<span class="nc" id="L487">            colorSymbol =  currentSymbol.getColor();</span>
+<span class="nc bnc" id="L488" title="All 2 branches missed.">            if (colorSymbol != null) {</span>
+<span class="nc" id="L489">                colorSymbols[indexColorSymbol] = colorSymbol;</span>
+<span class="nc" id="L490">                indexColorSymbol++;</span>
+            }
+<span class="nc" id="L492">        }</span>
+<span class="nc" id="L493">        return colorSymbols;</span>
+    }
+    
+    private void positionSymbol(Symbol symbol) {
+<span class="fc" id="L497">        int xPositionWheel = wheelShape.getXPosition();</span>
+<span class="fc" id="L498">        int heightWheel = wheelShape.getYPosition();</span>
+<span class="fc" id="L499">        symbol.changePosition(xPositionWheel + 15, heightWheel / 2 + 45);</span>
+<span class="fc" id="L500">    }</span>
+    
+    private Symbol findJustColorSymbol(String colorToFind) {
+<span class="fc" id="L503">        String colorFinded = null, currentColorSymbol = null;</span>
+<span class="fc" id="L504">        Symbol symbolFinded = null;</span>
+<span class="fc" id="L505">        boolean isColorFinded = false;</span>
+<span class="fc bfc" id="L506" title="All 2 branches covered.">        for (Symbol symbol : symbols.values()) {</span>
+<span class="fc" id="L507">            currentColorSymbol = symbol.getColor();</span>
+<span class="fc" id="L508">            isColorFinded = colorToFind.equals(currentColorSymbol);</span>
+<span class="fc bfc" id="L509" title="All 2 branches covered.">            if (isColorFinded) {</span>
+<span class="fc" id="L510">                symbolFinded = symbol;</span>
+<span class="fc" id="L511">                break;</span>
+            }
+<span class="fc" id="L513">        }</span>
+<span class="fc" id="L514">        return symbolFinded;</span>
+    }
+    
+    private void repositionSymbols() {
+<span class="fc bfc" id="L518" title="All 2 branches covered.">        for (Symbol symbol : symbols.values()) {</span>
+<span class="fc" id="L519">            positionSymbol(symbol);</span>
+<span class="fc" id="L520">        }</span>
+<span class="fc" id="L521">    }</span>
+    
+     public Integer getSelectedSymbolPosition() {
+<span class="nc" id="L524">        return selectedSymbolInteger;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

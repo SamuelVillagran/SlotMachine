@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SlotMachineException.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">slotmachine</a> &gt; <a href="index.source.html" class="el_package">slotMachine</a> &gt; <span class="el_source">SlotMachineException.java</span></div><h1>SlotMachineException.java</h1><pre class="source lang-java linenums">package slotMachine;
+
+
+/**
+ * Write a description of class SlotMachineException here.
+ * 
+ * @author (your name) 
+ * @version (a version number or a date)
+ */
+public class SlotMachineException extends RuntimeException {
+    public final static String CANT_SWAP_REBEL = &quot;A rebel wheel cannot be swap.&quot;;
+    public final static String CANT_DELETE_REBEL = &quot;A rebel wheel cannot be deleted.&quot;;
+    public final static String CANT_LOCK_REBEL = &quot;A rebel wheel cannot be locked.&quot;;
+    public final static String CANT_LEFT_COPY_WHEEL = &quot;A left wheel can't copy some wheel because it's the first wheel of slotmachine.&quot;;
+    
+    public SlotMachineException(String message) {
+<span class="fc" id="L17">        super(message);</span>
+<span class="fc" id="L18">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>
