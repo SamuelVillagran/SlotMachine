@@ -28,30 +28,23 @@ public class Rotation extends Symbol implements Updatable {
 <span class="nc" id="L28">    }</span>
 
     /**
-     * Triggers the rotation effect.
-     */
-    public void rotation() {
-<span class="nc" id="L34">        rotating();</span>
-<span class="nc" id="L35">    }</span>
-
-    /**
      * Changes the position of the symbol moving it up and down.
      */
     public void rotating() {
-<span class="nc bnc" id="L41" title="All 2 branches missed.">        if (isUp) {</span>
-<span class="nc" id="L42">            super.changePosition(baseX, baseY);</span>
-<span class="nc" id="L43">            this.isUp = false;</span>
-        } else {
-<span class="nc" id="L45">            super.changePosition(baseX, baseY - 20);</span>
-<span class="nc" id="L46">            this.isUp = true;</span>
+<span class="nc bnc" id="L34" title="All 2 branches missed.">        if (isUp) {</span>
+<span class="nc" id="L35">            super.changePosition(baseX, baseY);</span>
+<span class="nc" id="L36">            this.isUp = false;</span>
+<span class="nc" id="L37">        } else {</span>
+<span class="nc" id="L38">            super.changePosition(baseX, baseY - 20);</span>
+<span class="nc" id="L39">            this.isUp = true;</span>
         }
-<span class="nc" id="L48">    }</span>
+<span class="nc" id="L41">    }</span>
 
     /**
      * Applies the specific effect of the rotation symbol.
      */
     public void update() {
-<span class="nc" id="L54">        rotating();</span>
-<span class="nc" id="L55">    }</span>
+<span class="nc" id="L47">        rotating();</span>
+<span class="nc" id="L48">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

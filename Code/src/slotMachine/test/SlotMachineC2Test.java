@@ -97,6 +97,7 @@ public class SlotMachineC2Test {
         assertEquals(proofSecWheel, selectedSymbolSecWheel);       // sigue igual porque está locked
         assertEquals(proofFourthWheel, selectedSymbolFourthWheel); // sigue igual porque está locked
     
+        
         sltmchn.unlock(2);
         sltmchn.unlock(4);
         sltmchn.spin(2);

@@ -1,0 +1,15 @@
+{
+    "files.exclude": {
+        "**/*.class": true,
+        "**/*.ctxt": true
+    },
+    "search.exclude": {
+        "**/*.class": true,
+        "**/*.ctxt": true,
+        "**/package.bluej":true,
+        "**/**/package.bluej":true
+    },
+    "java.project.sourcePaths": ["Code/src"],
+    "java.project.referencedLibraries": ["lib/**/*.jar"],
+    "java.project.classpath": ["lib/junit-platform-console-standalone-1.9.2.jar"]
+}

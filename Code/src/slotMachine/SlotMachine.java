@@ -206,7 +206,7 @@ public class SlotMachine {
         
         Wheel wheelToDelete = wheels.get(pos);
         boolean isWheelToDeleteLocked = wheelToDelete.isLocked(), canDeleteWheel = wheelToDelete.canDelete();
-        if (isWheelToDeleteLocked || canDeleteWheel) {
+        if (isWheelToDeleteLocked || !canDeleteWheel) {
             errorMessage("Esa acción no se puede realizar.");
             return;
         }

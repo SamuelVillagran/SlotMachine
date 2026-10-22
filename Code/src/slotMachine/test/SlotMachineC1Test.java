@@ -1,7 +1,10 @@
 package slotMachine.test;
 
 import slotMachine.*;
+// Para que reconozca la clase Wheel (que está en el paquete principal)
+import slotMachine.Wheel;
 
+// Para que reconozca assertArrayEquals y todos los demás asertos de JUnit 5
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -52,7 +55,7 @@ public class SlotMachineC1Test {
     @Test
     public void shouldDelWheel() {
         sltmchn.addWheel(1);
-        Wheel wheelWillBeDeleted = wheels.get(0);
+        Wheel wheelWillBeDeleted = wheels.get(1);
         sltmchn.delWheel(1);
         assertFalse(wheels.containsValue(wheelWillBeDeleted)); // Se verifica su ausencia en la lista
         assertEquals(0, wheels.size());

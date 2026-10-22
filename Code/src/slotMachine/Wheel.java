@@ -211,7 +211,9 @@ public class Wheel {
             List<Integer> keys = new ArrayList<>(this.symbols.keySet());
             int randomIndex = random.nextInt(keys.size());
             int randomKey = keys.get(randomIndex);
-            selectedSymbol.setIsSelected(false);
+            if (selectedSymbol != null) {
+                selectedSymbol.setIsSelected(false);
+            }
             selectedSymbol = symbols.get(randomKey);
             selectedSymbol.setIsSelected(true);
             selectedSymbolInteger = randomKey;

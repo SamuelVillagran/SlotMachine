@@ -95,7 +95,7 @@ public class Canvas{
     public static Canvas getCanvas(){
 <span class="fc bfc" id="L96" title="All 2 branches covered.">        if(canvasSingleton == null) {</span>
 <span class="fc" id="L97">            canvasSingleton = new Canvas(&quot;BlueJ Shapes Demo&quot;, 300, 300, </span>
-                                         Color.white);
+<span class="fc" id="L98">                                         Color.white);</span>
         }
 <span class="fc" id="L100">        canvasSingleton.setVisible(true);</span>
 <span class="fc" id="L101">        return canvasSingleton;</span>
@@ -212,9 +212,9 @@ public class Canvas{
     public void wait(int milliseconds){
         try{
 <span class="fc" id="L214">            Thread.sleep(milliseconds);</span>
-<span class="nc" id="L215">        } catch (Exception e){</span>
+<span class="pc" id="L215">        } catch (Exception e){</span>
             // ignoring exception at the moment
-<span class="fc" id="L217">        }</span>
+        }
 <span class="fc" id="L218">    }</span>
 
     /**

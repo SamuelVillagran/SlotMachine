@@ -5,7 +5,6 @@ slotMachine\Wheel.class
 slotMachine\Symbol.class
 shapes\Canvas$CanvasPane.class
 slotMachine\SlotMachineException.class
-shapes\Canvas$1.class
 shapes\Rectangle.class
 shapes\Canvas.class
 slotMachine\SlotMachine.class

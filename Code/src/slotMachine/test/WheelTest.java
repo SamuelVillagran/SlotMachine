@@ -58,4 +58,16 @@ public class WheelTest
         wheel.delSymbol(triangle2);
         assertEquals(triangle3, wheel.selectedSymbol());
     }
+
+    @Test
+    public void deletingSelectedColorSelectsRemainingSymbol() {
+        Symbol selected = new Symbol("magenta");
+        Symbol remaining = new Symbol("blue");
+        wheel.addSymbol(selected);
+        wheel.addSymbol(remaining);
+
+        wheel.delSymbol("magenta");
+
+        assertSame(remaining, wheel.selectedSymbol());
+    }
 }
