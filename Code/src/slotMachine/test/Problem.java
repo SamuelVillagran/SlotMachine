@@ -1,4 +1,4 @@
-package slotMachine.test;
+package src.slotMachine.test;
 
 import slotMachine.*;
 

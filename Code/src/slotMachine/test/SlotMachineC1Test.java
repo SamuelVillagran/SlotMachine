@@ -1,4 +1,4 @@
-package slotMachine.test;
+package src.slotMachine.test;
 
 import slotMachine.*;
 // Para que reconozca la clase Wheel (que está en el paquete principal)

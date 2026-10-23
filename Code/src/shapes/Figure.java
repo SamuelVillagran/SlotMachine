@@ -1,4 +1,4 @@
-package shapes;
+package src.shapes;
 /**
  * Class Figure, each figure of shapes is Figure
  * 

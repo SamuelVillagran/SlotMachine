@@ -1,4 +1,4 @@
-package slotMachine;
+package src.slotMachine;
 
 /**
  * Write a description of class Rotation here.

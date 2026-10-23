@@ -1,13 +1,15 @@
-package slotMachine;
-import shapes.Rectangle;
-import shapes.Canvas;
-import shapes.Rectangle;
+package src.slotMachine;
+
+import src.shapes.Rectangle;
+import src.shapes.Canvas;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.*;
 import javax.swing.JOptionPane;
 import java.util.Map;
 import java.util.TreeMap;
+import java.lang.reflect.InvocationTargetException;
 
 /**
  * This is slot machine game, this is a variant of I problem - SlotMachine ICPC competition
@@ -102,57 +104,18 @@ public class SlotMachine {
         comprovateType(type);
         pos = adjustPosition(pos, true);
         try {
-            // Normaliza el nombre (ej. "rebel" -> "Rebel")
-            String normalizedType = type.substring(0, 1).toUpperCase() + type.substring(1);
-            String packageName = this.getClass().getPackageName();
-            Class<?> wheelClass = Class.forName(packageName + "." + normalizedType);
-            // Valida que la clase sea realmente una subclase de Wheel
-            if (!Wheel.class.isAssignableFrom(wheelClass)) {
-                errorMessage("La clase '" + normalizedType + "' no es una rueda válida.");
-                ok();
-                return;
-            }
-            Wheel newWheelToAdd = null;
-            if (normalizedType.equalsIgnoreCase("Lefty")) {
-                if (pos <= 1) {
-                    errorMessage("Una rueda Lefty no puede ser colocada en la primera posición.");
-                    ok();
-                    return;
-                }
-                Wheel previousWheel = wheels.get(pos - 1);
-                if (previousWheel == null) {
-                    errorMessage("No existe una rueda previa para inicializar la rueda Lefty.");
-                    ok();
-                    return;
-                }
-                newWheelToAdd = (Wheel) wheelClass.getDeclaredConstructor(Wheel.class)
-                                                  .newInstance(previousWheel);
-            } else {
-                newWheelToAdd = (Wheel) wheelClass.getDeclaredConstructor().newInstance();
-            }
-            // Una vez instanciada con éxito, se desplazan las ruedas hacia la derecha
-            NavigableMap<Integer, Wheel> tailWheels = wheels.tailMap(pos, true);
-            List<Integer> keysToShift = new ArrayList<>(tailWheels.keySet());
-            Collections.reverse(keysToShift);
-            for (Integer key : keysToShift) {
-                Wheel wheelToMove = wheels.remove(key);
-                wheelToMove.setPositionWheel(key + 1);
-                wheels.put(key + 1, wheelToMove);
-            }
+            Wheel newWheelToAdd = createTypeOfWheel(type, pos);
+            organiceWheels(pos);
             // Inserción y configuración de la nueva rueda
             newWheelToAdd.setPositionWheel(pos);
-            wheels.put(pos, newWheelToAdd);
-            if (Updatable.class.isAssignableFrom(wheelClass)) thingsToUpdate.add((Updatable) newWheelToAdd);// Bloque ayudado a hacer por Gemini Pro 3.1
+            putWheel(pos, newWheelToAdd);
+            if (Updatable.class.isAssignableFrom(newWheelToAdd.getClass())) thingsToUpdate.add((Updatable) newWheelToAdd);// Bloque ayudado a hacer por Gemini Pro 3.1
             adjustWheels();
             if (isVisible) {
                 newWheelToAdd.makeVisible();
             }
             isOk = true;
-        } catch (ClassNotFoundException e) {
-            errorMessage("Error: La clase de rueda '" + type + "' no existe en el proyecto.");
-        } catch (NoSuchMethodException e) {
-            errorMessage("Error: Constructor adecuado no encontrado para '" + type + "'.");
-        } catch (Exception e) {
+        }  catch (Exception e) {
             errorMessage("Error al instanciar la rueda: " + e.getMessage());
         }
         ok();
@@ -165,26 +128,14 @@ public class SlotMachine {
      */
     public void addSymbol(String type, int pos, String color) { //Ayudado a hacer con Gemini 3.8 Flash
         isOk = false;
-        
         // Verifica que la rueda en la posición 'pos' exista
         boolean isApprovedInvariant = proofInvariant(pos, false);
         if (!isApprovedInvariant) return;
         try {
-            String packageName = this.getClass().getPackageName();
-            // Asegura primera letra mayúscula por si pasan "ephemeral", "shy" o "rotation"
-            String formattedType = type.substring(0, 1).toUpperCase() + type.substring(1);
-            Class<?> symbolClass = Class.forName(packageName + "." + formattedType);
-            Symbol newSymbolToAdd = null;
-            newSymbolToAdd = (Symbol) symbolClass.getDeclaredConstructor(String.class)
-                                                 .newInstance(color);
-            // Obtiene la rueda y le agrega el nuevo símbolo instanciado
-            Wheel wheelToAddSymbol = wheels.get(pos);
-            wheelToAddSymbol.addSymbol(newSymbolToAdd);
+            Symbol newSymbolToAdd = createTypeOfSymbol(type, pos, color);
             // Si el símbolo implementa Updatable (como Ephemeral y Shy), se registra para actualización
-            if (Updatable.class.isAssignableFrom(symbolClass)) thingsToUpdate.add((Updatable) newSymbolToAdd);
+            if (Updatable.class.isAssignableFrom(newSymbolToAdd.getClass())) thingsToUpdate.add((Updatable) newSymbolToAdd);
             isOk = true;
-        } catch (ClassNotFoundException e) {
-            System.out.println("Error: The class '" + type + "' does not exist in the project.");
         } catch (Exception e) {
             System.out.println("Error while attempting to create the symbol instance: " + e.getMessage());
         }
@@ -719,5 +670,102 @@ public class SlotMachine {
             ok();
             return;
         }
+    }
+    
+    private void organiceWheels(int pos) {
+        // Una vez instanciada con éxito, se desplazan las ruedas hacia la derecha
+            NavigableMap<Integer, Wheel> tailWheels = wheels.tailMap(pos, true);
+            List<Integer> keysToShift = new ArrayList<>(tailWheels.keySet());
+            Collections.reverse(keysToShift);
+            for (Integer key : keysToShift) {
+                Wheel wheelToMove = wheels.remove(key);
+                wheelToMove.setPositionWheel(key + 1);
+                wheels.put(key + 1, wheelToMove);
+            }
+    }
+    
+    private Wheel createTypeOfWheel(String type, int pos) {// Ayudado a hacer con Claude Sonnet 4.5
+        // Normaliza el nombre (ej. "rebel" -> "Rebel")
+        String normalizedType = type.substring(0, 1).toUpperCase() + type.substring(1);
+        String packageName = this.getClass().getPackageName();
+        Class<?> wheelClass = null;
+        try {
+            wheelClass = Class.forName(packageName + "." + normalizedType);
+            if (!Wheel.class.isAssignableFrom(wheelClass)) {
+                errorMessage("La clase '" + normalizedType + "' no es una rueda válida.");
+                ok();
+                return null;
+            }
+        } catch (ClassNotFoundException cnfe) {
+            cnfe.printStackTrace();
+            return null; 
+        }
+        Wheel newWheelToAdd = null;
+        try {
+            if (normalizedType.equals("Lefty")) { 
+                Wheel previousWheel = wheels.get(pos - 1);
+                if (previousWheel == null) {
+                    errorMessage("No existe una rueda previa para inicializar la rueda Lefty.");
+                    ok();
+                    return null; 
+                }
+                newWheelToAdd = (Wheel) wheelClass
+                    .getDeclaredConstructor(Wheel.class)
+                    .newInstance(previousWheel);
+            } else {
+                newWheelToAdd = (Wheel) wheelClass
+                    .getDeclaredConstructor()
+                    .newInstance();
+            }
+        } catch (NoSuchMethodException | InstantiationException |
+                 IllegalAccessException | InvocationTargetException e) {
+            e.printStackTrace();
+            errorMessage("No se pudo instanciar la clase '" + normalizedType + "'.");
+            ok();
+            return null;
+        }
+        return newWheelToAdd;
+    }
+    
+    
+    private void putWheel(int pos, Wheel wheelToPut) {
+        wheels.put(pos, wheelToPut);
+    }
+    
+    private Symbol createTypeOfSymbol(String type, int pos, String color) {// Ayudado a hacer y corregir con Claude Sonnet 4.5
+        String packageName = this.getClass().getPackageName();
+        String formattedType = type.substring(0, 1).toUpperCase() + type.substring(1);
+        Class<?> symbolClass = null;
+        try {
+            symbolClass = Class.forName(packageName + "." + formattedType);
+            if (!Symbol.class.isAssignableFrom(symbolClass)) {
+                errorMessage("La clase '" + formattedType + "' no es un símbolo válido.");
+                ok();
+                return null;
+            }
+        } catch (ClassNotFoundException cnfe) {
+            cnfe.printStackTrace();
+            return null; 
+        }
+        Symbol newSymbolToAdd = null;
+        try {
+            newSymbolToAdd = (Symbol) symbolClass
+                .getDeclaredConstructor(String.class)
+                .newInstance(color);
+        } catch (NoSuchMethodException | InstantiationException |
+                 IllegalAccessException | InvocationTargetException e) {
+            e.printStackTrace(); 
+            errorMessage("No se pudo instanciar el símbolo '" + formattedType + "'.");
+            ok();
+            return null;
+        }
+        Wheel wheelToAddSymbol = wheels.get(pos);
+        if (wheelToAddSymbol == null) {
+            errorMessage("No existe una rueda en la posición " + pos + ".");
+            ok();
+            return null;
+        }
+        wheelToAddSymbol.addSymbol(newSymbolToAdd);
+        return newSymbolToAdd;
     }
 }

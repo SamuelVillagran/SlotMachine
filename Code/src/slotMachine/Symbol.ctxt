@@ -37,5 +37,5 @@ comment7.target=java.lang.String\ getColor()
 comment8.params=
 comment8.target=boolean\ isVisible()
 comment9.params=
-comment9.target=shapes.Triangle\ getSymbolShape()
+comment9.target=src.shapes.Triangle\ getSymbolShape()
 numComments=17

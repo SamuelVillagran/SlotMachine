@@ -1,6 +1,6 @@
-package slotMachine;
+package src.slotMachine;
 
-import shapes.Rectangle;
+import src.shapes.Rectangle;
 import java.util.NavigableMap;
 
 import java.util.List;

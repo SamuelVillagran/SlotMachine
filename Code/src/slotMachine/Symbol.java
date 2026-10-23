@@ -1,6 +1,6 @@
-package slotMachine;
+package src.slotMachine;
 
-import shapes.Triangle;
+import src.shapes.Triangle;
 
 import java.util.Objects;
 import java.awt.*;

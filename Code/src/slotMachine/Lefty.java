@@ -1,4 +1,4 @@
-package slotMachine;
+package src.slotMachine;
 import java.util.Map;
 import java.util.TreeMap;
 
