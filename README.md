@@ -301,3 +301,4 @@ Puntos detectados al revisar el código que conviene atender en próximos ciclos
 ---
 
 *Proyecto académico — DOPO-POOB 2026-2.*
+Readme generado por Claude Sonnet 5.5
